@@ -1,0 +1,243 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Fungi Identifier</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'fungi_css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'fungi_css/styles2.css' %}">
+
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div class="top_navbar">
+        <div class="logo">
+            <a>Fungi Indentifier</a>
+            <!--<h1 style="color:white;"> Fungi Identifier </h1>-->
+        </div>
+        <div class="top_menu">
+            <div class="home_link">
+                <!--<a href="#">-->
+
+                <h1 style="color:white;">
+                    {% if "Deadly" in fungi.CulinaryRating or "deadly" in fungi.CulinaryRating %}
+                        <img src="/media/images/icons8-skull-and-crossbones-48-red.png" alt="/default.jpg"/>
+                    {% elif  "Poisonous" in CulinaryRating or  "poisonous" in CulinaryRating %}
+                        <img src="/media/images/icons8-skull-and-crossbones-48.png" alt="/default.jpg"/>
+                    {% endif %}
+                    {% if "Edible" in CulinaryRating %}
+                        <img src="/media/images/icons8-dining-room-64-white-2.png" alt="/default.jpg"/>
+                    {% endif %}
+                    {% if "Inedible" in CulinaryRating %}
+                        <img src="/media/images/icons8-dining-room-64-white-5.png" alt="/default.jpg"/>
+                    {% endif %}
+                    {% if "medicinal" in CulinaryRating %}
+                        <img src="/media/images/icons8-medicine-64.png" alt="Hippocrates">
+                    {% endif %}
+
+
+                    {% if  object.CommonName %}
+                        {% if object.CommonName == "Common Name" %}
+                            <em>{{ object.LatinName }}</em>, id: {{ object.id }}
+                        {% endif %}
+                        {% if object.CommonName != "Common Name" %}
+                            {% if user.show.ShowLatinNames %}
+                                {{ object.CommonName }}<em> {{ object.LatinName }}</em>, id {{ object.id }}
+                            {% else %}
+                                {{ object.CommonName }}
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        {% if Fungi_note %}
+                            {% block FungiNote1 %}{% endblock FungiNote1 %}
+                            <em>
+                                {% block FungiNote2 %}{% endblock FungiNote2 %}
+                            </em>
+                            {% block FungiNote3 %}{% endblock FungiNote3 %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if object.UKSpecies == "Yes" %}
+                        <img src="/media/images/pngfind.com-english-flag-png-6458760.png" alt="/default.jpg"/>
+
+                    {% endif %}
+                </h1>
+            </div>
+
+            <div class="logged_on_name">
+                <div class="icon_wrap">
+                    {% if not  user.username == "" %}
+                        <h4 style="color:white;">user: {{ user.username }}, {{ user.id }}</h4>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main_body">
+
+        <div class="sidebar_container">
+            <div>
+                {% block Netlinks %}
+                {% endblock Netlinks %}
+            </div>
+
+            {% block search %}
+            {% endblock search %}
+
+        </div>
+
+        <div class="sidebar_menu">
+            <div class="inner__sidebar_menu">
+                {% if user.is_authenticated %}
+                    <ul>
+                        <li>
+                            <a href="{% url 'AllFungi-HomePage' %}">
+                                <span><img src="/media/images/home-2483.png" alt=""></span>
+                                <span class="text">Home</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'AllFungiList' %}">
+                                <span><img src="/media/images/icons8-mushroom-36.png" alt=""></span>
+                                <span class="text">Fungi List</span>
+                            </a>
+                        </li>
+                        {% if request.user.is_superuser %}
+                            <li>
+                                <a href="{% url 'new_fungi' %}">
+                                    <span><img src="/media/images/mushroom-2339.png" alt=""></span>
+                                    <span class="text">New Fungi</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a href="{% url 'search_fungi' %}">
+                                <span><img src="/media/images/search-8909.png" alt=""></span>
+                                <span class="text">Search</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'glossary' %}">
+                                <span><img src="/media/images/search-8909.png" alt=""></span>
+                                <span class="text">Glossary</span>
+                            </a>
+                        </li>
+                        {% if request.user.is_superuser %}
+                            <li>
+                                <a href="{% url 'glossary_form' %}">
+                                    <span><img src="/media/images/search-8909.png" alt=""></span>
+                                    <span class="text">Glossary-add</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if user.username == 'GuestUser' %}
+                            <li>
+                                <a href="{% url 'register' %}">
+                                    <span><img src="/media/images/check-mark-3280.png" alt=""></span>
+                                    <span class="text">Register</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li>
+                            <a href="{% url 'profile' %}">
+                                <span><img src="/media/images/user-3297.png" alt=""></span>
+                                <span class="text">Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'usersettings:Filter-HomePage' %}">
+                                <span><img src="/media/images/settings-778.png" alt=""></span>
+                                <span class="text">User Settings</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'Links-Page' %}">
+                                <span><img src="/media/images/link-chain-10475.png" alt=""></span>
+                                <span class="text">Links & Notes</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'logout' %}">
+                                <span><img src="/media/images/exit-logout-2861.png" alt=""></span>
+                                <span class="text">Logout</span>
+                            </a>
+                        </li>
+
+                        {% if request.user.is_superuser %}
+                            <li>
+                                <a href="{% url 'admin:index' %}">
+                                    <span><img src="/media/images/mushroom-2339.png" alt=""></span>
+                                    <span class="text">Admin</span>
+                                </a>
+                            </li>
+                         {% endif %}
+
+                        <li>
+                            <a href="{% url 'AllFungi-AboutPage' %}">
+                                <span><img src="/media/images/information-1154.png" alt=""></span>
+                                <span class="text">About</span>
+                            </a>
+                        </li>
+                    </ul>
+                {% else %}
+                    <ul>
+                        <li>
+                            <a href="{% url 'login' %}">
+                                <span><img src="/media/images/exit-logout-2861.png" alt=""></span>
+                                <span class="text">Login</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'AllFungi-AboutPage' %}">
+                                <span><img src="/media/images/information-1154.png" alt=""></span>
+                                <span class="text">About</span>
+                            </a>
+                        </li>
+                        -->
+                    </ul>
+                {% endif %}
+
+
+            </div>
+        </div>
+
+        <div class="container">
+            {% block title %}{% endblock title %}
+            {% block content %}{% endblock content %}
+            {% block LatinSynonymsblock %}{% endblock LatinSynonymsblock %}
+
+            {% block filters %}{% endblock filters %}
+            {% block filterSettingsBlock %}{% endblock filterSettingsBlock %}
+            {% block search_results %}{% endblock search_results %}
+            {% block search2 %}{% endblock search2 %}
+
+            {% block usergroupsblock %}{% endblock usergroupsblock %}
+            {% block GroupAddblock %}{% endblock GroupAddblock %}
+
+
+            {% block DetailBlock %}{% endblock DetailBlock %}
+            {% block netlinksblock %}{% endblock netlinksblock %}
+            {% block netlinksdeleteblock %}{% endblock netlinksdeleteblock %}
+
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

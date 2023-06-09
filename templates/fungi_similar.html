@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block DetailBlock %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+        {% csrf_token %}
+        {{ form.management_form }}
+        {{ form.non_form_errors }}
+        <div class="detail">
+            <h3>
+                <label class="sub-content">Similar Fungi - Add or delete</label>
+            </h3>
+            {% for similar_fungi_form in form.forms %}
+                <h4>
+                    {% if similar_fungi_form.instance.id %}
+
+                    {% else %}
+                        {% if similar_fungi_form.forms|length > 1 %}
+                            Add another Similar Name
+                        {% else %}
+                            Add Similar Name
+                        {% endif %}
+                    {% endif %}
+                </h4>
+                {% for hidden_field in similar_fungi_form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                {% endfor %}
+                {{ refs.non_field_errors }}
+                <div class="sub-content">
+                    <h4>
+                        {{ similar_fungi_form|crispy }}
+                    </h4>
+                </div>
+            {% endfor %}
+            <p>
+                <button type="submit" class="btn btn-success">Save Similar Fungi</button>
+                <a href="{{ fungi.get_absolute_url }}" role="button" class="btn btn-secondary">Cancel</a>
+            </p>
+        </div>
+    </form>
+{% endblock DetailBlock %}

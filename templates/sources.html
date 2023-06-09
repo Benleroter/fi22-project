@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="detail">
+        <h2>
+            <label class="sub-content">List of internet and book sources used in this app</label>
+        </h2>
+        {% for source in SourceName %}
+            <div class="sub-content">
+                <h3>{{ source.Website }}</h3>
+            </div>
+
+        {% endfor %}
+    </div>
+
+{% endblock content %}
+
+			

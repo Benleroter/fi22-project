@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block search_results %}
+    <h1>
+        {% if resultscount == 1 %}
+            {{ resultscount }} result
+        {% else %}
+            {{ resultscount }} results
+        {% endif %}
+    </h1>
+
+    {% for fungi in search_fungi_results %}
+        {% if fungi.id in synonymlist %}
+            <article class="media content-section-orange">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <p style="font-size:30px">Synonym for: <em>{{ SearchTerms }}</em></p>
+                        <a class="article-title" href="{% url 'FungiDetail-Page' fungi.id %}">
+                            <p style="font-size:30px">{{ fungi.CommonName }}, <em>{{ fungi.LatinName }}</em>, Group: {{ fungi.Group }}</p>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+        {% elif fungi.id in commonnameslist %}
+            <article class="media content-section-orange">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <p style="font-size:30px">Other common name for: <em>{{ SearchTerms }}</em></p>
+                        <a class="article-title" href="{% url 'FungiDetail-Page' fungi.id %}">
+                            <p style="font-size:30px">{{ fungi.CommonName }}, <em>{{ fungi.LatinName }}</em>, Group: {{ fungi.Group }}</p>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+
+        {% else %}
+
+            <article class="media content-section">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="article-title" href="{% url 'FungiDetail-Page' fungi.id %}">
+                            {% if  fungi.CommonName == 'Common Name' %}
+                                <p style="font-size:30px">No Common Name, <em>{{ fungi.LatinName }}</em>, Group: {{ fungi.Group }}</p>
+                            {% else %}
+                                <p style="font-size:30px">{{ fungi.CommonName }}, <em>{{ fungi.LatinName }}</em>, Group: {{ fungi.Group }}</p>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </article>
+        {% endif %}
+    {% endfor %}
+
+
+
+{% endblock search_results %}
+
+
+
+			

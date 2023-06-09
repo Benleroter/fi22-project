@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% block search2 %}
+    <h1>Search fields </h1>
+
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <h4>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button class="btn btn-success" type="submit">Search</button>
+                        {% if user.username != 'GuestUser' %}
+                            <a href="{% url 'usersettings:edit-search-fields' user.showsearchfields.user_id %}" class="btn btn-secondary">Select fields for searches</a>
+                        {% else %}
+                            As Guest User these are the only avaiable search fields, <a href="{% url 'register' %}" class="btn btn-secondary">register for more</a>
+                        {% endif %}
+
+                    </form>
+                </h4>
+            </div>
+        </div>
+    </article>
+{% endblock search2 %}

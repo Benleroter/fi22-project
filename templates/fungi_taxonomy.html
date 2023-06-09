@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block DetailBlock %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+        {% csrf_token %}
+        {{ form.management_form }}
+        {{ form.non_form_errors }}
+        <div class="detail">
+            <h3>
+                <label class="sub-content">Taxonomy - edit</label>
+            </h3>
+            {% for taxonomy_form in form.forms %}
+                <h4>
+                    {% if taxonomy_form.instance.id %}
+                        <div class="sub-content">
+                            {{ taxonomy_form|crispy }}
+                        </div>
+                    {% endif %}
+                </h4>
+                {% for hidden_field in taxonomy_form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                {% endfor %}
+            {% endfor %}
+            <p>
+                <button type="submit" class="btn btn-success">Save Taxonomy</button>
+                <a href="{{ fungi.get_absolute_url }}" role="button" class="btn btn-secondary">Cancel</a>
+            </p>
+        </div>
+    </form>
+{% endblock DetailBlock %}

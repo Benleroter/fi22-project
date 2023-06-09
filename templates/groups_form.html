@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="content-section">
+        {% if user.username != 'GuestUser' %}
+            <legend class="border-bottom mb-4"><h2>Set Groups for Administrator - {{ user.username }}</h2></legend>
+        {% else %}
+            <legend class="border-bottom mb-4">
+                <h2>Set Modes<h4><em>Default values for GuestUser</em></h4></h2>
+            </legend>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group col-md-4 mb-0">
+                    {{ form.Group|as_crispy_field }}
+                    {{ form.GroupCheck|as_crispy_field }}
+                </div>
+
+
+                {% if user.username != 'GuestUser' %}
+                    <div class="form-group">
+                        <button class="btn btn-success"><span style="font-size:20px;">Save Groups - Administrator</span></button>
+                    </div>
+                {% else %}
+                    <div class="form-group">
+                        <button class="btn btn-warning" disabled type="button"><span style="font-size:20px;">Save Groups - GuestUser</span></button>
+                        <em>To edit and save personal settings please register</em>
+                    </div>
+                {% endif %}
+            </div>
+
+        </form>
+    </div>
+{% endblock content %} 

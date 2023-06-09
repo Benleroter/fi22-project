@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block DetailBlock %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+        {% csrf_token %}
+        {{ form.management_form }}
+        {{ form.non_form_errors }}
+        <div class="detail">
+            <h3>
+                <label class="sub-content">References - edit or add</label>
+            </h3>
+            {% for fungi_references_form in form.forms %}
+                <h4>
+                    {% if fungi_references_form.instance.id %}
+                    {% else %}
+                        {% if fungi_references_form.forms|length > 1 %}
+                            Add another Reference
+                        {% else %}
+                            Add a Reference
+                        {% endif %}
+                    {% endif %}
+                </h4>
+                {% for hidden_field in fungi_references_form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                {% endfor %}
+                {{ refs.non_field_errors }}
+                <div class="sub-content">
+                    <h4>
+                        {{ fungi_references_form|crispy }}
+                    </h4>
+                </div>
+            {% endfor %}
+            <p>
+                <button type="submit" class="btn btn-success">Update Reference</button>
+                <a href="{{ fungi.get_absolute_url }}" role="button" class="btn btn-secondary">Cancel</a>
+            </p>
+        </div>
+    </form>
+{% endblock DetailBlock %}

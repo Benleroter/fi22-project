@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}New Glossary Term{% endblock %}
+
+{% block content %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+        {% csrf_token %}
+        {{ form.management_form }}
+        {{ form.non_form_errors }}
+        <div class="detail">
+            <h3>
+                <label class="sub-content">Glossary - edit/add</label>
+            </h3>
+            {% for term in form.forms %}
+                <hr>
+                <h5>
+                    {% if term.instance.id %}
+                    {% else %}
+                        {% if form.forms|length > 1 %}
+                            Add another term
+                        {% else %}
+                            Add a term
+                        {% endif %}
+                    {% endif %}
+                </h5>
+                {% for hidden_field in term.hidden_fields %}
+                    {{ hidden_field.errors }}
+                    {{ hidden_field }}
+                {% endfor %}
+                {{ term.non_field_errors }}
+                <div class="sub-content">
+                    <h4>
+                        <div class="form-group row">
+                            <div class="form-group col-md-2 mb-0">
+                                {{ term.Term|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-2 mb-0">
+                                {{ term.term_lower_case|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-2 mb-0">
+                                {{ term.Source|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-9 mb-0">
+                                {{ term.Meaning|as_crispy_field }}
+                            </div>
+                        </div>
+                    </h4>
+                </div>
+            {% endfor %}
+            <p class="pt-2">
+                <button type="submit" class="btn btn-success">Add/update Glossary Term</button>
+                <a href="{{ fungi.get_absolute_url }}" role="button" class="btn btn-secondary">Cancel</a>
+            </p>
+
+        </div>
+    </form>
+{% endblock content %}

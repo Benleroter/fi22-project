@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+<!--https://www.youtube.com/watch?v=OduVfuv44K8-->
+<!-- https://github.com/veryacademy/YT_Inline_Formset_CBV_Ex1/blob/main/books/templates/author_books_edit.html-->
+
+{% block title %}Editing Net Links for {{ fungi.CommonName }}{% endblock %}
+
+{% block netlinksblock %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+        {% csrf_token %}
+        {{ form.management_form }}
+        {{ form.non_form_errors }}
+        <div class="detail">
+            <h3><label class="sub-content">Update Net Links</label></h3>
+            {% for netlinks_form in form.forms %}
+                <hr>
+                <h5>
+                    {% if netlinks_form.instance.id %}
+
+                    {% else %}
+                        {% if netlinks_form.forms|length > 1 %}
+                            Add another NetLink
+                        {% else %}
+                            Add a NetLink
+                        {% endif %}
+                    {% endif %}
+                </h5>
+                {% for hidden_field in netlinks_form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                {% endfor %}
+                {{ netlinks_form.non_field_errors }}
+                <div class="sub-content">
+                    {{ netlinks_form|crispy }}
+                </div>
+            {% endfor %}
+            <p>
+                <button type="submit" class="btn btn-success">Update NetLinks</button>
+                <a href="{{ fungi.get_absolute_url }}" role="button" class="btn btn-secondary">Cancel</a>
+            </p>
+
+        </div>
+    </form>
+
+{% endblock netlinksblock %}

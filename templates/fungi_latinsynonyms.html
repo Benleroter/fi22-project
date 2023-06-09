@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+<!--https://www.youtube.com/watch?v=OduVfuv44K8-->
+<!-- https://github.com/veryacademy/YT_Inline_Formset_CBV_Ex1/blob/main/books/templates/author_books_edit.html-->
+
+{% block title %}{% endblock title %}
+
+{% block DetailBlock %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.errors }}
+            {{ hidden_field }}
+        {% endfor %}
+        {% csrf_token %}
+        {{ form.management_form }}
+        {{ form.non_form_errors }}
+        <div class="detail">
+            <h3><label class="sub-content">Update Latin Synonyms</label></h3>
+            {% for latin_synonyms_form in form.forms %}
+                <h4>
+                    {% if latin_synonyms_form.instance.id %}
+                        Latin synonym:
+                    {% else %}
+                        {% if latin_synonyms_form.forms|length > 1 %}
+                            Add another Latin Synonym
+                        {% else %}
+                            Add a Latin Synonym
+                        {% endif %}
+                    {% endif %}
+                </h4>
+                {% for hidden_field in latin_synonyms_form.hidden_fields %}
+                    {{ hidden_field.errors }}
+                {% endfor %}
+                {{ refs.non_field_errors }}
+                <div class="sub-content">
+                    <h4>
+                        {{ latin_synonyms_form|crispy }}
+                    </h4>
+                </div>
+            {% endfor %}
+            <p>
+                <button type="submit" class="btn btn-success">Update Latin Synonym(s)</button>
+                <a href="{{ fungi.get_absolute_url }}" role="button" class="btn btn-secondary">Cancel</a>
+            </p>
+        </div>
+    </form>
+{% endblock DetailBlock %}

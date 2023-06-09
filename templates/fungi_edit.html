@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+    <div class='detail'>
+        <h2 style="background-color: #ffff99;">Edit Fungi</h2>
+        <form action="" method="post">
+            {% for hidden_field in form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+            {% endfor %}
+            <div class="sub-content">
+                {% csrf_token %}
+                {{ form|crispy }}
+            </div>
+            <p class="pt-2">
+                <button type="submit" class="btn btn-success">Update Fungi</button>
+                <a href="{{ fungi.get_absolute_url }}" role="button" class="btn btn-secondary">Cancel</a>
+            </p>
+        </form>
+    </div>
+{% endblock content %}

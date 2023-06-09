@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>List of fungi groups</h2>
+    {% for group in groups %}
+        <article class="media content-section">
+            <h3>
+                <p class="article-content">{{ group.Group }}</p>
+            </h3>
+
+        </article>
+    {% endfor %}
+{% endblock content %}
+
+
+
+			

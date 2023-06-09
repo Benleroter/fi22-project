@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class='detail'>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <title>Document</title>
+        </head>
+        <body>
+        <legend class="sub-content">Latin Synonyms for:-{{ fungi_id }}{{ object.Fungi }}</legend>
+        <form method="POST">
+            <div class="sub-content">
+                {% csrf_token %}
+                {{ formset|crispy }}
+                <button type="submit">Save</button>
+            </div>
+        </form>
+
+        </body>
+    </div>
+
+{% endblock content %}
+
+
+
+			

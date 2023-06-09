@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Settings for: {{ user }}</h1>
+    {% for show in shows %}
+
+        {% if show.user.id == user.id %}
+
+            <article class="media content-section">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <h2>
+                            <button type="button" class="btn btn-outline-warning">
+                                <span style="font-size:30px;"><a
+                                        href="{% url 'usersettings:edit-show-filter' show.slug %}">Choose details to show
+                                        </a></span>
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div class="article-metadata">
+                        <h2>
+                            <button type="button" class="btn btn-outline-warning">
+                                <span style="font-size:30px;"><a
+                                        href="{% url 'usersettings:edit-search-fields' show.slug %}">Choose search fields
+                                        </a></span>
+                            </button>
+                        </h2>
+                    </div>
+
+
+                </div>
+            </article>
+        {% endif %}
+    {% endfor %}
+{% endblock content %}

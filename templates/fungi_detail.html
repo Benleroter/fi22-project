@@ -1,0 +1,1610 @@
+{% extends "base.html" %}
+
+{% block Netlinks %}
+    <h5>
+        <div class="detail2">Further reading & Links:</div>
+        {% block title %}{% endblock title %}
+        {% for i in NetLinks %}
+            {% if i.Website != 'NoData' %}
+                <!--<div class="sub-content" >-->
+                <div class="sub-content2">
+                    <a target="_blank" href={{ i.Websiteurl }}>
+                        <img src="/media/images/icons8-mushroom-36.png" alt="/default.jpg">{{ i.Website }}</a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </h5>
+    {% if request.user.is_superuser %}
+    <a href="{% url 'fungi_netlinks' object.id %}" class="btn btn-warning" style="float:left;">Add/Edit/Delete
+        Links</a>
+    {% endif %}
+{% endblock Netlinks %}
+
+{% block picture %}
+    <img src="/media/{{ Picture.image }}" alt="/default.jpg"/>
+{% endblock picture %}
+
+{% block DetailBlock %}
+    {% if data_to_display %}
+        <!-- Fungi -->
+        {% if request.user.is_superuser %}
+            <div class="detail">
+                <div class="sub-content">
+                    <a href="{% url 'fungi_edit' object.id %}">Edit Fungi details</a>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- FungiComments -->
+        {% if FungiCommentsFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Fungi Comments:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_comments' object.id %}" class="btn btn-success" style="float:right;">edit
+                            Fungi Comments</a>
+                    {% endif %}
+                    {% for i in FungiCommentsSourcesList %}
+                        {% if i.FungiCommentsSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+
+                    {% if FungiComments  != "no comments" %}
+                        <div class="sub-content">
+                            <strong>Fungi Comments: </strong>
+                            {% if not FungiCommentsLinks %}
+                                {{ FungiComments }}
+                            {% else %}
+                                {% for key,value in FungiComments.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </h5>
+            </div>
+
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_comments' object.id %}">Add Comments</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+
+        <!-- Personal Notes -->
+        {% if FungiNotesFlag == 'Yes' %}
+            <div class="detail">
+                {% if Notes %}
+                    <h3>
+
+                        {% if request.user.is_superuser %}
+                            All Notes: user:{{ user.username }}
+                            <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning" style="float:right;">References</a>
+                            <a href="{% url 'Fungi_note_create' fungi.id %}" class="btn btn-success" style="float:right;">Add new note</a>
+                        {% elif  request.user.is_authenticated %}
+                            {{ user.username }}'s Personal Notes:
+                            <a href="{% url 'Fungi_note_create' fungi.id %}" class="btn btn-success" style="float:right;">Add new note</a>
+                        {% endif %}
+
+                    </h3>
+                    {% for i in Notes %}
+                        {% if  request.user.is_superuser %}
+                            NOTE: {{ i.NoteCount }}, author: {{ i.created_by }}, created: {{ i.NoteDate }}
+                        {% else %}
+                            NOTE: {{ i.NoteCount }}, {{ fungi.CommonName }}, author: {{ i.created_by }}, created: {{ i.NoteDate }}
+                        {% endif %}
+                        <div class="sub-content">
+                            <h5>
+                                {% if i.Note  != "NoData" %}
+                                    <div class="sub-content">
+                                        <strong>Comments: </strong><a>{{ i.Note }}</a>
+                                    </div>
+                                {% endif %}
+                                {% if i.MonthFound  != "NoData" %}
+                                    <div class="sub-content">
+                                        <strong>Month found: </strong><a>{{ i.MonthFound }}</a>
+                                    </div>
+                                {% endif %}
+                                {% if i.WhereFound  != "NoData" %}
+                                    <div class="sub-content">
+                                        <strong>Where found: </strong><a>{{ i.WhereFound }}</a>
+                                    </div>
+                                {% endif %}
+                                {% if i.Environment  != "NoData" %}
+                                    <div class="sub-content">
+                                        <strong>Environmental Notes: </strong><a>{{ i.Environment }}</a>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <div class="sub-content">
+
+                                        <a href="{% url 'Fungi_note_edit' i.id %}" class="btn btn-success">Edit Note</a>
+                                        <a href="{% url 'Fungi_note_delete' i.id %}" class="btn btn-danger">Delete Note</a>
+                                    </div>
+                                </div>
+
+                            </h5>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h3>
+                        no Personal Notes entered:
+                        {% if request.user.is_superuser %}
+                            <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                               style="float:right;">
+                                References</a>
+                            <a href="{% url 'Fungi_note_edit' fungi.id %}" class="btn btn-success" style="float:right;">
+                                edit notes</a>
+                        {% endif %}
+                    </h3>
+                {% endif %}
+
+            </div>
+        {% else %}
+            {% if request.user.is_authenticated and  user.username != 'GuestUser' %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'Fungi_note_create' object.id %}" class="btn btn-success">Add Notes</a>
+
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+
+        <!-- Habitat -->
+        {% if ShowHabitatFlag == 'Yes' %}
+            <div class="detail">
+                <a class="fungi-title" href="{% url 'FungiDetail-Page' object.id %}"></a>
+                <h3>
+                    Habitat:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_habitat' fungi.id %}" class="btn btn-success" style="float:right;">
+                            edit habitat</a>
+                    {% endif %}
+                    {% for i in Habitat_Sources_List %}
+                        {% if i.Habitat_Sources_List != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if Associations != 'NoData' %}
+                        <div class="sub-content">
+                            <strong>Associations: </strong>
+                            {% if not AssociationsLinks %}
+                                {{ Associations }}
+                            {% else %}
+                                {% for key,value in Associations.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if Ph  != "NoData" and Ph != "Other" %}
+                        <div class="sub-content">
+                            <strong>Acidity of underlying geology: </strong><a>{{ Ph }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if Soil  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Soil: </strong>
+                            {% if not SoilLinks %}
+                                {{ Soil }}
+                            {% else %}
+                                {% for key,value in Soil.items %}
+
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if Substrate  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Substrate/Growing medium: </strong>
+                            {% if not SubstrateLinks %}
+                                {{ Substrate }}
+                            {% else %}
+                                {% for key,value in Substrate.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if Environment  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Environment: </strong>
+                            {% if not EnvironmentLinks %}
+                                {{ Environment }}
+                            {% else %}
+                                {% for key,value in Environment.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+
+                    {% if HabitatComments  != "no comments" %}
+                        <div class="sub-content">
+                        <strong>Comments: </strong>
+                        {% if not HabitatCommentsLinks %}
+                            {{ HabitatComments }}
+                        {% else %}
+                            {% for key,value in HabitatComments.items %}
+                                {% if 'item' in key %}
+                                    {{ value }}
+                                {% endif %}
+
+                                {% if 'link' in key %}
+                                    <a href={{ value.0 }}>{{ value.1 }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                </h5>
+            </div>
+        {% else %}
+
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_habitat' object.id %}">Add Habitat details</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Fruiting Body -->
+        {% if ShowFruitingBodyFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Fruiting Body (Cap/Pileus):
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_fruiting_body' object.id %}" class="btn btn-success"
+                           style="float:right;">
+                            edit fruiting body</a>
+                    {% endif %}
+                    {% for i in FruitingBodySourcesList %}
+                        {% if i.FruitingBodySourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if CapColour  != "NoData"  and CapColour is not None %}
+                        <div class="sub-content">
+                            <strong>Colour: </strong>
+                            {% if not CapColourLinks %}
+                                {{ CapColour }}
+                            {% else %}
+                                {% for key,value in CapColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if CapShape  != "NoData" and CapShape is not None %}
+                        <div class="sub-content">
+                            <strong>Shape: </strong>
+                            {% if not CapShapeLinks %}
+                                {{ CapShape }}
+                            {% else %}
+                                {% for key,value in CapShape.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if CapRim != "NoData" and CapRim != "Other" and CapRim is not None %}
+                        <div class="sub-content">
+                            <strong>Rim:</strong>
+                            {% if not CapRimLinks %}
+                                {{ CapRim }}
+                            {% else %}
+                                {% for key,value in CapRim.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if CapTexture  != "NoData" and CapTexture != "Various" and CapTexture is not None %}
+                        <div class="sub-content">
+                            <strong>Texture:</strong>
+                            {% if not CapTextureLinks %}
+                                {{ CapTexture }}
+                            {% else %}
+                                {% for key,value in CapTexture.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if CapBruiseColour  != "NoData" and CapBruiseColour is not None %}
+                        <div class="sub-content">
+                            <strong>Bruise colour: </strong>
+                            {% if not CapBruiseColourLinks %}
+                                {{ CapBruiseColour }}
+                            {% else %}
+                                {% for key,value in CapBruiseColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if CapCutColour  != "NoData"  and CapCutColour is not None %}
+                        <div class="sub-content">
+                            <strong>Cut colour: </strong>
+                            {% if not CapCutColourLinks %}
+                                {{ CapCutColour }}
+                            {% else %}
+                                {% for key,value in CapCutColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if CapWidthMin  != 0.00 and CapWidthMax  != 0.00 %}
+                        <div class="sub-content">
+                            {% if CapWidthMin == 'up to' %}
+                                <strong>Width: </strong><a>{{ CapWidthMin }}</a>
+                                <a> {{ CapWidthMax }}cm</a>
+                            {% else %}
+                                <strong>Width: </strong><a>{{ CapWidthMin }}cm</a>
+                                <a>- {{ CapWidthMax }}cm</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if CapComments  != "no comments" and CapComments is not None %}
+                        <div class="sub-content">
+                            <strong>Comments: </strong>
+                            {% if not CapCommentsLinks %}
+                                {{ CapComments }}
+                            {% else %}
+                                {% for key,value in CapComments.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_fruiting_body' object.id %}">Add Fruiting Body details</a>
+                    </div>
+                </div>
+            {% endif %}
+
+        {% endif %}
+
+        <!-- Stipe -->
+        {% if ShowStipeFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Stipe (Stem):
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_stipe' object.id %}" class="btn btn-success" style="float:right;">
+                            edit Stipe</a>
+                    {% endif %}
+                    {% for i in StipeSourcesList %}
+                        {% if i.StipeSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if StipeColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Colour: </strong>
+
+                            {% if not StipeColourLinks %}
+                                {{ StipeColour }}
+                            {% else %}
+                                {% for key,value in StipeColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                    {% endif %}
+                    {% if StipeTexture  != "NoData" and StipeTexture != "Other" %}
+                        <div class="sub-content">
+                            <strong>Texture: </strong>
+                            {% if not StipeTextureLinks %}
+                                {{ StipeTexture }}
+                            {% else %}
+                                {% for key,value in StipeTexture.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if StipeBruiseColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Bruise Colour: </strong>
+                            {% if not StipeBruiseColourLinks %}
+                                {{ StipeBruiseColour }}
+                            {% else %}
+                                {% for key,value in StipeBruiseColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if StipeCutColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Cut Colour: </strong>
+                            {% if not StipeCutColourLinks %}
+                                {{ StipeCutColour }}
+                            {% else %}
+                                {% for key,value in StipeCutColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if Shape  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Shape: </strong>
+                            {% if not ShapeLinks %}
+                                {{ Shape }}
+                            {% else %}
+                                {% for key,value in Shape.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if StipeRing  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Stipe Ring/Annulus: </strong>
+                            {% if not StipeRingLinks %}
+                                {{ StipeRing }}
+                            {% else %}
+                                {% for key,value in StipeRing.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if RingDescription  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Ring Description: </strong>
+                            {% if not RingDescriptionLinks %}
+                                {{ RingDescription }}
+                            {% else %}
+                                {% for key,value in RingDescription.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if ReticulationPresent  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Reticulation: </strong><a>{{ ReticulationPresent }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if Reticulation  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Reticulation: </strong>
+                            {% if not ReticulationLinks %}
+                                {{ Reticulation }}
+                            {% else %}
+                                {% for key,value in Reticulation.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if Base  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Base: </strong>
+                            {% if not BaseLinks %}
+                                {{ Base }}
+                            {% else %}
+                                {% for key,value in Base.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if Volva  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Volva: </strong>
+                            {% if not VolvaLinks %}
+                                {{ Volva }}
+                            {% else %}
+                                {% for key,value in Volva.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+
+                    {% if StipeThicknessMin  != 0.00 and StipeThicknessMax  != 0.00 %}
+                        <div class="sub-content">
+                            {% if StipeThicknessMin == 'up to' %}
+                                <strong>Thickness: </strong><a>{{ StipeThicknessMin }}</a>
+                                <a>- {{ StipeThicknessMax }}cm</a>
+                            {% else %}
+                                <strong>Thickness: </strong><a>{{ StipeThicknessMin }}cm</a>
+                                <a>- {{ StipeThicknessMax }}cm</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if StipeLengthMin  != 0.00 and StipeLengthMax  != 0.00 %}
+                        <div class="sub-content">
+                            {% if StipeLengthMin == 'up to' %}
+                                <strong>Length: </strong><a>{{ StipeLengthMin }}</a>
+                                <a>- {{ StipeLengthMax }}cm</a>
+
+                            {% else %}
+                                <strong>Length: </strong><a>{{ StipeLengthMin }}cm</a>
+                                <a>- {{ StipeLengthMax }}cm</a>
+
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if StipeComments  != "no comments" %}
+                        <div class="sub-content">
+                            <strong>Comments:</strong>
+                            {% if not StipeCommentsLinks %}
+                                {{ StipeComments }}
+                            {% else %}
+                                {% for key,value in StipeComments.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_stipe' object.id %}">Add Stipe details</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Cuisine -->
+        {% if ShowCuisineFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Cuisine and uses:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_cuisine' object.id %}" class="btn btn-success" style="float:right;">
+                            edit Cuisine</a>
+                    {% endif %}
+
+                    {% for i in CuisineSourcesList %}
+                        {% if i.CuisineSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if CulinaryRating  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Culinary rating: </strong><a>{{ CulinaryRating }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if Odour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Odour: </strong><a>{{ Odour }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if Taste  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Taste: </strong><a>{{ Taste }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if PoisonType  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Poison Type: </strong><a>{{ PoisonType }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if CuisineComments  != "no comments" %}
+                        <div class="sub-content">
+                            <strong>Comments: </strong>
+
+                            {% if not CuisineCommentsLinks %}
+                                {{ CuisineComments }}
+                            {% else %}
+
+                                {% for key,value in CuisineComments.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_cuisine' object.id %}">Add Cuisine details</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Flesh -->
+        {% if ShowFleshFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Flesh:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_flesh' object.id %}" class="btn btn-success" style="float:right;">
+                            edit Flesh</a>
+                    {% endif %}
+                    {% for i in FleshSourcesList %}
+                        {% if i.FleshSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if FleshCapColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Cap: </strong>
+                            {% if not FleshCapColourLinks %}
+                                {{ FleshCapColour }}
+                            {% else %}
+                                {% for key,value in FleshCapColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if FleshCapBruiseColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Cap Bruise: </strong>
+                            {% if not FleshCapBruiseColourLinks %}
+                                {{ FleshCapBruiseColour }}
+                            {% else %}
+                                {% for key,value in FleshCapBruiseColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if FleshCapCutColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Cap Cut: </strong>
+                            {% if not FleshCapCutColourLinks %}
+                                {{ FleshCapCutColour }}
+                            {% else %}
+                                {% for key,value in FleshCapCutColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if FleshStipeColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Stipe: </strong>
+                            {% if not FleshStipeColourLinks %}
+                                {{ FleshStipeColour }}
+                            {% else %}
+                                {% for key,value in FleshStipeColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if FleshStipeBruiseColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Stipe Bruise: </strong>
+                            {% if not FleshStipeBruiseColourLinks %}
+                                {{ FleshStipeBruiseColour }}
+                            {% else %}
+                                {% for key,value in FleshStipeBruiseColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if FleshStipeCutColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Stipe Cut: </strong>
+                            {% if not FleshStipeCutColourLinks %}
+                                {{ FleshStipeCutColour }}
+                            {% else %}
+                                {% for key,value in FleshStipeCutColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if FleshComments  != "no comments" %}
+                        <div class="sub-content">
+                            <strong>Comments: </strong>
+                            {% if not FleshCommentsLinks %}
+                                {{ FleshComments }}
+                            {% else %}
+                                {% for key,value in FleshComments.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_flesh' object.id %}">Add Flesh details</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+
+
+
+
+        <!-- Similar Fungi -->
+        {% if ShowSimilarFungiFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Similar Fungi or possible confusion:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_similar' fungi.id %}" class="btn btn-success" style="float:right;">
+                            edit Similar Fungi</a>
+                    {% endif %}
+                    {% for i in SimilarFungiSourcesList %}
+                        {% if i.SimilarFungiSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% for i in SimilarFungiNames %}
+                        {% if i.SimilarFungiName != "NoData" %}
+                            <div class="sub-content">
+                                <a href="{% url 'FungiDetail-Page' i.SFid %}">{{ i.SimilarFungiName }} </a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_similar' object.id %}">Add Similar Fungi</a>
+                    </div>
+                </div>
+            {% endif %}
+
+        {% endif %}
+
+        <!-- CommonNames -->
+        {% if ShowCommonNameFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Other Common Names:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_commonnames' fungi.id %}" class="btn btn-success" style="float:right;">
+                            edit Common Names</a>
+                    {% endif %}
+                    {% for i in OtherCommonNamesSourcesList %}
+                        {% if i.OtherCommonNamesSourcesList != "NoData" %}
+                            <sup><a target="_blank" target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% for i in OtherCommonNames %}
+                        {% if i.AltCommonName != "NoData" %}
+                            <div class="sub-content">
+                                <a>{{ i.AltCommonName }}</a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_commonnames' object.id %}">Add Common Names</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- LatinSynonyms -->
+        {% if ShowLatinSynonymsFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Latin Synonyms:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url  'fungi_latinsynonyms' object.id %}" class="btn btn-success"
+                           style="float:right;">edit Latin Synonyms</a>
+
+                    {% endif %}
+                    {% for i in LatinSynonymsSourcesList %}
+                        {% if i.LatinSynonymsSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% for i in LatinSynonyms %}
+                        {% if i.LatinSynonym != "NoData" %}
+                            <div class="sub-content">
+                                <a>{{ i.LatinSynonym }}: {{ i.LatinSynonymSource }}</a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_latinsynonyms' object.id %}">Add LatinSynonyms</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Spores -->
+        {% if ShowSporesFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Spores:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_spores' object.id %}" class="btn btn-success" style="float:right;">
+                            edit Spores</a>
+                    {% endif %}
+                    {% for i in SporesSourcesList %}
+                        {% if i.SporesSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if SporesColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Colour: </strong>
+                            {% if not SporesColourLinks %}
+                                {{ SporesColour }}
+                            {% else %}
+                                {% for key,value in SporesColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if SporesComments  != "no comments" %}
+                        <div class="sub-content">
+                            <strong>Comments: </strong>
+                            {% if not SporesCommentsLinks %}
+                                {{ SporesComments }}
+                            {% else %}
+                                {% for key,value in SporesComments.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_spores' object.id %}">Add Spore Details</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Season -->
+        {% if ShowSeasonFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Seasons:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_seasons' object.id %}" class="btn btn-success" style="float:right;">
+                            edit Seasons</a>
+                    {% endif %}
+                    {% for i in SeasonsSourcesList %}
+                        {% if i.SeasonsSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if FruitingSeason  != "NoData" %}
+                        <div class="sub-content">
+                            <a><strong>Season: </strong>{{ FruitingSeason }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if SeasonComments  != "no comments" %}
+                        <div class="sub-content">
+                            <strong>Season Comments: </strong><a>{{ SeasonComments }}</a>
+                        </div>
+                    {% endif %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_seasons' object.id %}">Add Seasons</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Status -->
+        {% if ShowStatusFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Status:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_status' fungi.id %}" class="btn btn-success" style="float:right;">
+                            edit Status</a>
+                    {% endif %}
+                    {% for i in StatusSourcesList %}
+                        {% if i.StatusSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if StatusData  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Status: </strong><a>{{ StatusData }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if WhereFound  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Where found: </strong><a>{{ WhereFound }}</a>
+                        </div>
+                    {% endif %}
+
+
+                    {% if RecordedInUK  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Recorded In UK: </strong><a>{{ RecordedInUK }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if StatusComments  != "no comments" %}
+                        <div class="sub-content">
+                            <strong>StatusComments: </strong><a>{{ StatusComments }}</a>
+                        </div>
+                    {% endif %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_status' object.id %}">Add Status Details</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+
+
+
+        <!-- PoresAndTubes -->
+        {% if ShowPoresAndTubesFlag == 'Yes' and PoresPresent == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Pores and Tubes:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_pores' object.id %}" class="btn btn-success" style="float:right;">
+                            edit Pores and Tubes</a>
+                    {% endif %}
+                    {% for i in PoresAndTubesSourcesList %}
+                        {% if i.PoresAndTubesSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if PoreColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Pore Colour: </strong>
+                            {% if not PoreColourLinks %}
+                                {{ PoreColour }}
+                            {% else %}
+                                {% for key,value in PoreColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if PoreShape  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Pore Shape: </strong>
+                            {% if not PoreShapeLinks %}
+                                {{ PoreShape }}
+                            {% else %}
+                                {% for key,value in PoreShape.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if PoreBruiseColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Pore Bruise Colour: </strong>
+                            {% if not PoreBruiseColourLinks %}
+                                {{ PoreBruiseColour }}
+                            {% else %}
+                                {% for key,value in PoreBruiseColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if TubeColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Tube Colour: </strong>
+                            {% if not TubeColourLinks %}
+                                {{ TubeColour }}
+                            {% else %}
+                                {% for key,value in TubeColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if TubeShape  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Tube Shape: </strong>
+                            {% if not TubeShapeLinks %}
+                                {{ TubeShape }}
+                            {% else %}
+                                {% for key,value in TubeShape.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if TubeBruiseColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Tube Bruise Colour: </strong>
+                            {% if not TubeBruiseColourLinks %}
+                                {{ TubeBruiseColour }}
+                            {% else %}
+                                {% for key,value in TubeBruiseColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if PoreMilk  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Milk: </strong><a>{{ PoreMilk }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if PoreComments  != "no comments" %}
+                        <div class="sub-content">
+                            <strong>Comments: </strong>
+                            {% if not PoreCommentsLinks %}
+                                {{ PoreComments }}
+                            {% else %}
+                                {% for key,value in PoreComments.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_pores' object.id %}">Add Pore Details</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <!-- Gills -->
+        {% if ShowGillsFlag == 'Yes' and GillsPresent == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Gills/Hymenium-Lamellae:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_gills' object.id %}" class="btn btn-success" style="float:right;">
+                            edit Gills</a>
+                    {% endif %}
+                    {% for i in GillsSourcesList %}
+                        {% if i.GillsSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if GillsPresent  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Colour: </strong>
+                            {% if not GillsColourLinks %}
+                                {{ GillsColour }}
+                            {% else %}
+                                {% for key,value in GillsColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if GillsBruiseColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Bruise Colour: </strong>
+                            {% if not GillsBruiseColourLinks %}
+                                {{ GillsBruiseColour }}
+                            {% else %}
+                                {% for key,value in GillsBruiseColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if GillsCutColour  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Cut Colour: </strong>
+                            {% if not GillsCutColourLinks %}
+                                {{ GillsCutColour }}
+                            {% else %}
+                                {% for key,value in GillsCutColour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if GillsAttachment  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Attachment: </strong>
+                            {% if not GillsAttachmentLinks %}
+                                {{ GillsAttachment }}
+                            {% else %}
+                                {% for key,value in GillsAttachment.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if GillsArrangement  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Arrangement: </strong>
+                            {% if not GillsArrangementLinks %}
+                                {{ GillsArrangement }}
+                            {% else %}
+                                {% for key,value in GillsArrangement.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if GillsMilk  != "NoData" %}
+                        <div class="sub-content">
+                            <strong>Milk: </strong><a>{{ GillsMilk }}</a>
+                        </div>
+                    {% endif %}
+
+                    {% if GillsComments  != "no comments" %}
+                        <div class="sub-content">
+                            <strong>Comments: </strong>
+                            {% if not GillsCommentsLinks %}
+                                {{ GillsComments }}
+                            {% else %}
+                                {% for key,value in GillsComments.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_gills' object.id %}">Add Gill Details</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+
+
+        <!-- Classification -->
+        {% if ShowClassificationFlag == 'Yes' %}
+            <div class="detail">
+                <h3>
+                    Classification/Taxonomy:
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'fungi_refs' object.id %}" class="btn btn-warning"
+                           style="float:right;">
+                            References</a>
+                        <a href="{% url 'fungi_taxonomy' object.id %}" class="btn btn-success" style="float:right;">
+                            edit Classification</a>
+                    {% endif %}
+                    {% for i in ClassificationSourcesList %}
+                        {% if i.ClassificationSourcesList != "NoData" %}
+                            <sup><a target="_blank" href={{ i }}>[{{ forloop.counter }}]</a></sup>
+                        {% endif %}
+                    {% endfor %}
+                </h3>
+                <h5>
+                    {% if Kingdom  != "NoData" %}
+                        <div class="sub-content">
+                            <p><strong>Kingdom: </strong><a>{{ Kingdom }}</a></p>
+                            <p>---<strong>Phyum: </strong><a>{{ Phyum }}</a></p>
+                            <p>------<strong>Sub Phyum: </strong><a>{{ SubPhyum }}</a></p>
+                            <p>---------<strong>Class: </strong><a>{{ Class }}</a></p>
+                            <p>------------<strong>Sub Class: </strong><a>{{ SubClass }}</a></p>
+                            <p>---------------<strong>Order: </strong><a>{{ Order }}</a></p>
+                            <p>------------------<strong>Family: </strong><a>{{ Family }}</a></p>
+                            <p>---------------------<strong>Genus: </strong><a>{{ Genus }}</a></p>
+                        </div>
+                    {% endif %}
+                </h5>
+            </div>
+        {% else %}
+            {% if request.user.is_superuser %}
+                <div class="detail">
+                    <div class="sub-content">
+                        <a href="{% url 'fungi_taxonomy' object.id %}">Add Taxonomy</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+    {% else %}
+        <div class="detail">
+            <div class="sub-content">
+                <h3>No data yet entered for: {{ object.CommonName }} </h3>
+            </div>
+        </div>
+    {% endif %}
+{% endblock DetailBlock %}
+
+
+
+      
