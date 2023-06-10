@@ -46,11 +46,13 @@
 
                     {% if  object.CommonName %}
                         {% if object.CommonName == "Common Name" %}
-                            <em>{{ object.LatinName }}</em>, id: {{ object.id }}
+                            <em>{{ object.LatinName }}</em>id: {{ object.id }}
                         {% endif %}
                         {% if object.CommonName != "Common Name" %}
                             {% if user.show.ShowLatinNames %}
-                                {{ object.CommonName }}<em> {{ object.LatinName }}</em>, id {{ object.id }}
+                                {% if   object.LatinName != False %}
+                                    {{ object.CommonName }}<em> {{ object.LatinName }}</em>, id {{ object.id }}
+                                {%  endif %}
                             {% else %}
                                 {{ object.CommonName }}
                             {% endif %}
