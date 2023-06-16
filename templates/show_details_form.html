@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load crispy_forms_filters %}
 {% block content %}
+
+
     <div class="content-section">
         {% if user.username != 'GuestUser' %}
             <legend class="border-bottom mb-4"><h2>Fungi details to show</h2></legend>
@@ -11,7 +13,6 @@
         {% endif %}
         <form method="POST">
             {% csrf_token %}
-
             <div class="form-row">
                 <div class="form-group col-md-4 mb-0">
                     {{ form.ShowOtherCommonNames|as_crispy_field }}

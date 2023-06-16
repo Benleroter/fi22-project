@@ -10,7 +10,7 @@ class ShowAdmin(admin.ModelAdmin):
 
 class ShowSearchFieldsAdmin(admin.ModelAdmin):
     #list_display = ("id", "user","id","slug")
-    list_display = ("user",  "slug")
+    list_display = ( "id","slug","user_id","user")
     #fields = ['id','user','slug']
     #prepopulated_fields = {"slug": ("id",)}  # new
     #'https://actorsfit.com/a?ID=00001-8b31500b-a5be-449c-aa7b-0d256758ce83'
