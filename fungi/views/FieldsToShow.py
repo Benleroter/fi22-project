@@ -33,7 +33,7 @@ def fields_to_show(user_search_fields):
         fields_to_show_dict['SearchHabitatSoil'] = forms.CharField(required=False, max_length=255, label='Soil type', initial='')
 
     if user_search_fields.SearchMonthFound:
-        print('user_search_fields.MonthFound',user_search_fields.MonthFound)
+        print('user_search_fields.SearchMonthFound',user_search_fields.SearchMonthFound)
         fields_to_show_dict['SearchMonthFound'] = forms.ChoiceField(choices=MonthFoundChoices, required=False, label='Month/Season Found', initial='month')
 
     if user_search_fields.SearchCapColour:
@@ -202,7 +202,7 @@ def fields_to_show(user_search_fields):
     if user_search_fields.SearchStatusStatusData:
         fields_to_show_dict['SearchStatusStatusData'] = forms.CharField(required=False, max_length=255, label='Status', initial='')
 
-    if user_search_fields.SearchSearchStatusWhereFound:
+    if user_search_fields.SearchStatusWhereFound:
         fields_to_show_dict['SearchStatusWhereFound'] = forms.CharField(required=False, max_length=255, label='Where Found', initial='')
 
     return fields_to_show_dict
