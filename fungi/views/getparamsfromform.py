@@ -1,270 +1,270 @@
 def get_params_from_form(form):
     q_params = {}
-    field_name = 'CommonName'
+    field_name = 'SearchCommonName'
     if field_name in form.fields:
-        q_params["CommonName"] = form.cleaned_data['CommonName']
+        q_params["CommonName"] = form.cleaned_data['SearchCommonName']
         # print('q_params2: ', q_params)
 
-    field_name = 'OtherCommonNames'
+    field_name = 'SearchOtherCommonNames'
     if field_name in form.fields:
-        q_params["OtherCommonNames"] = form.cleaned_data['OtherCommonNames']
+        q_params["OtherCommonNames"] = form.cleaned_data['SearchOtherCommonNames']
 
-    field_name = 'LatinName'
+    field_name = 'SearchLatinName'
     if field_name in form.fields:
-        q_params["LatinName"] = form.cleaned_data['LatinName']
-        # q_params["LatinSynonyms"] = form.cleaned_data['LatinName']
+        q_params["LatinName"] = form.cleaned_data['SearchLatinName']
+        # q_params["LatinSynonyms"] = form.cleaned_data['SearchLatinName']
 
-    field_name = 'LatinSynonyms'
+    field_name = 'SearchLatinSynonyms'
     if field_name in form.fields:
-        q_params["LatinSynonyms"] = form.cleaned_data['LatinSynonyms']
+        q_params["LatinSynonyms"] = form.cleaned_data['SearchLatinSynonyms']
 
-    field_name = 'Group'
+    field_name = 'SearchGroup'
     if field_name in form.fields:
-        q_params["Group"] = form.cleaned_data['Group']
+        q_params["Group"] = form.cleaned_data['SearchGroup']
         # print('q_params2: ', q_params)
 
-    field_name = 'HabitatAssociations'
+    field_name = 'SearchHabitatAssociations'
     if field_name in form.fields:
-        q_params["HabitatAssociations"] = form.cleaned_data['HabitatAssociations']
+        q_params["HabitatAssociations"] = form.cleaned_data['SearchHabitatAssociations']
 
-    field_name = 'HabitatPh'
+    field_name = 'SearchHabitatPh'
     if field_name in form.fields:
-        q_params["HabitatPh"] = form.cleaned_data['HabitatPh']
+        q_params["HabitatPh"] = form.cleaned_data['SearchHabitatPh']
 
-    field_name = 'HabitatSubstrate'
+    field_name = 'SearchHabitatSubstrate'
     if field_name in form.fields:
-        q_params["HabitatSubstrate"] = form.cleaned_data['HabitatSubstrate']
+        q_params["HabitatSubstrate"] = form.cleaned_data['SearchHabitatSubstrate']
 
-    field_name = 'HabitatEnvironment'
+    field_name = 'SearchHabitatEnvironment'
     if field_name in form.fields:
-        q_params["HabitatEnvironment"] = form.cleaned_data['HabitatEnvironment']
+        q_params["HabitatEnvironment"] = form.cleaned_data['SearchHabitatEnvironment']
 
-    field_name = 'HabitatSoil'
+    field_name = 'SearchHabitatSoil'
     if field_name in form.fields:
-        q_params["HabitatSoil"] = form.cleaned_data['HabitatSoil']
+        q_params["HabitatSoil"] = form.cleaned_data['SearchHabitatSoil']
 
-    field_name = 'MonthFound'
+    field_name = 'SearchMonthFound'
     if field_name in form.fields:
-        q_params["Season"] = form.cleaned_data['MonthFound']
+        q_params["Season"] = form.cleaned_data['SearchMonthFound']
 
-    field_name = 'CapColour'
+    field_name = 'SearchCapColour'
     if field_name in form.fields:
-        q_params["CapColour"] = form.cleaned_data['CapColour']
+        q_params["CapColour"] = form.cleaned_data['SearchCapColour']
 
-    field_name = 'CapShape'
+    field_name = 'SearchCapShape'
     if field_name in form.fields:
-        q_params["CapShape"] = form.cleaned_data['CapShape']
+        q_params["CapShape"] = form.cleaned_data['SearchCapShape']
 
-    field_name = 'CapRim'
+    field_name = 'SearchCapRim'
     if field_name in form.fields:
-        q_params["CapRim"] = form.cleaned_data['CapRim']
+        q_params["CapRim"] = form.cleaned_data['SearchCapRim']
 
-    field_name = 'CapTexture'
+    field_name = 'SearchCapTexture'
     if field_name in form.fields:
-        q_params["CapTexture"] = form.cleaned_data['CapTexture']
+        q_params["CapTexture"] = form.cleaned_data['SearchCapTexture']
 
-    field_name = 'CapBruiseColour'
+    field_name = 'SearchCapBruiseColour'
     if field_name in form.fields:
-        q_params["CapBruiseColour"] = form.cleaned_data['CapBruiseColour']
+        q_params["CapBruiseColour"] = form.cleaned_data['SearchCapBruiseColour']
 
-    field_name = 'CapCutColour'
+    field_name = 'SearchCapCutColour'
     if field_name in form.fields:
-        q_params["CapCutColour"] = form.cleaned_data['CapCutColour']
+        q_params["CapCutColour"] = form.cleaned_data['SearchCapCutColour']
 
-    field_name = 'CapWidth'
+    field_name = 'SearchCapWidth'
     if field_name in form.fields:
-        q_params["CapWidth"] = form.cleaned_data['CapWidth']
+        q_params["CapWidth"] = form.cleaned_data['SearchCapWidth']
 
-    field_name = 'StipeColour'
+    field_name = 'SearchStipeColour'
     if field_name in form.fields:
-        q_params["StipeColour"] = form.cleaned_data['StipeColour']
+        q_params["StipeColour"] = form.cleaned_data['SearchStipeColour']
 
-    field_name = 'StipeBruiseColour'
+    field_name = 'SearchStipeBruiseColour'
     if field_name in form.fields:
-        q_params["StipeBruiseColour"] = form.cleaned_data['StipeBruiseColour']
+        q_params["StipeBruiseColour"] = form.cleaned_data['SearchStipeBruiseColour']
 
-    field_name = 'StipeCutColour'
+    field_name = 'SearchStipeCutColour'
     if field_name in form.fields:
-        q_params["StipeCutColour"] = form.cleaned_data['StipeCutColour']
+        q_params["StipeCutColour"] = form.cleaned_data['SearchStipeCutColour']
 
-    field_name = 'StipeLength'
+    field_name = 'SearchStipeLength'
     if field_name in form.fields:
-        q_params["StipeLength"] = form.cleaned_data['StipeLength']
+        q_params["StipeLength"] = form.cleaned_data['SearchStipeLength']
 
-    field_name = 'StipeThickness'
+    field_name = 'SearchStipeThickness'
     if field_name in form.fields:
-        q_params["StipeThickness"] = form.cleaned_data['StipeThickness']
+        q_params["StipeThickness"] = form.cleaned_data['SearchStipeThickness']
 
-    field_name = 'StipeShape'
+    field_name = 'SearchStipeShape'
     if field_name in form.fields:
-        q_params["StipeShape"] = form.cleaned_data['StipeShape']
+        q_params["StipeShape"] = form.cleaned_data['SearchStipeShape']
 
-    field_name = 'StipeReticulationPresent'
+    field_name = 'SearchStipeReticulationPresent'
     if field_name in form.fields:
-        q_params["StipeReticulationPresent"] = form.cleaned_data['StipeReticulationPresent']
+        q_params["StipeReticulationPresent"] = form.cleaned_data['SearchStipeReticulationPresent']
 
-    field_name = 'StipeReticulation'
+    field_name = 'SearchStipeReticulation'
     if field_name in form.fields:
-        q_params["StipeReticulation"] = form.cleaned_data['StipeReticulation']
+        q_params["StipeReticulation"] = form.cleaned_data['SearchStipeReticulation']
 
-    field_name = 'StipeBase'
+    field_name = 'SearchStipeBase'
     if field_name in form.fields:
-        q_params["StipeBase"] = form.cleaned_data['StipeBase']
+        q_params["StipeBase"] = form.cleaned_data['SearchStipeBase']
 
-    field_name = 'StipeTexture'
+    field_name = 'SearchStipeTexture'
     if field_name in form.fields:
-        q_params["StipeTexture"] = form.cleaned_data['StipeTexture']
+        q_params["StipeTexture"] = form.cleaned_data['SearchStipeTexture']
 
-    field_name = 'StipeRing'
+    field_name = 'SearchStipeRing'
     if field_name in form.fields:
-        q_params["StipeRing"] = form.cleaned_data['StipeRing']
+        q_params["StipeRing"] = form.cleaned_data['SearchStipeRing']
 
-    field_name = 'PoresPresent'
+    field_name = 'SearchPoresPresent'
     if field_name in form.fields:
-        q_params["PoresPresent"] = form.cleaned_data['PoresPresent']
+        q_params["PoresPresent"] = form.cleaned_data['SearchPoresPresent']
 
-    field_name = 'PoreColour'
+    field_name = 'SearchPoreColour'
     if field_name in form.fields:
-        q_params["PoreColour"] = form.cleaned_data['PoreColour']
+        q_params["PoreColour"] = form.cleaned_data['SearchPoreColour']
 
-    field_name = 'PoreShape'
+    field_name = 'SearchPoreShape'
     if field_name in form.fields:
-        q_params["PoreShape"] = form.cleaned_data['PoreShape']
+        q_params["PoreShape"] = form.cleaned_data['SearchPoreShape']
 
-    field_name = 'PoreBruiseColour'
+    field_name = 'SearchPoreBruiseColour'
     if field_name in form.fields:
-        q_params["PoreBruiseColour"] = form.cleaned_data['PoreBruiseColour']
+        q_params["PoreBruiseColour"] = form.cleaned_data['SearchPoreBruiseColour']
 
-    field_name = 'TubeColour'
+    field_name = 'SearchTubeColour'
     if field_name in form.fields:
-        q_params["TubeColour"] = form.cleaned_data['TubeColour']
+        q_params["TubeColour"] = form.cleaned_data['SearchTubeColour']
 
-    field_name = 'TubeShape'
+    field_name = 'SearchTubeShape'
     if field_name in form.fields:
-        q_params["TubeShape"] = form.cleaned_data['TubeShape']
+        q_params["TubeShape"] = form.cleaned_data['SearchTubeShape']
 
-    field_name = 'TubeBruiseColour'
+    field_name = 'SearchTubeBruiseColour'
     if field_name in form.fields:
-        q_params["TubeBruiseColour"] = form.cleaned_data['TubeBruiseColour']
+        q_params["TubeBruiseColour"] = form.cleaned_data['SearchTubeBruiseColour']
 
-    field_name = 'PoreMilk'
+    field_name = 'SearchPoreMilk'
     if field_name in form.fields:
-        q_params["PoreMilk"] = form.cleaned_data['PoreMilk']
+        q_params["PoreMilk"] = form.cleaned_data['SearchPoreMilk']
 
-    field_name = 'GillsPresent'
+    field_name = 'SearchGillsPresent'
     if field_name in form.fields:
-        q_params["GillsPresent"] = form.cleaned_data['GillsPresent']
+        q_params["GillsPresent"] = form.cleaned_data['SearchGillsPresent']
 
-    field_name = 'GillsColour'
+    field_name = 'SearchGillsColour'
     if field_name in form.fields:
-        q_params["GillsColour"] = form.cleaned_data['GillsColour']
+        q_params["GillsColour"] = form.cleaned_data['SearchGillsColour']
 
-    field_name = 'GillsBruiseColour'
+    field_name = 'SearchGillsBruiseColour'
     if field_name in form.fields:
-        q_params["GillsBruiseColour"] = form.cleaned_data['GillsBruiseColour']
+        q_params["GillsBruiseColour"] = form.cleaned_data['SearchGillsBruiseColour']
 
-    field_name = 'GillsCutColour'
+    field_name = 'SearchGillsCutColour'
     if field_name in form.fields:
-        q_params["GillsCutColour"] = form.cleaned_data['GillsCutColour']
+        q_params["GillsCutColour"] = form.cleaned_data['SearchGillsCutColour']
 
-    field_name = 'GillsAttachment'
+    field_name = 'SearchGillsAttachment'
     if field_name in form.fields:
-        q_params["GillsAttachment"] = form.cleaned_data['GillsAttachment']
+        q_params["GillsAttachment"] = form.cleaned_data['SearchGillsAttachment']
 
-    field_name = 'GillsArrangement'
+    field_name = 'SearchGillsArrangement'
     if field_name in form.fields:
-        q_params["GillsArrangement"] = form.cleaned_data['GillsArrangement']
+        q_params["GillsArrangement"] = form.cleaned_data['SearchGillsArrangement']
 
-    field_name = 'GillsMilk'
+    field_name = 'SearchGillsMilk'
     if field_name in form.fields:
-        q_params["GillsMilk"] = form.cleaned_data['GillsMilk']
+        q_params["GillsMilk"] = form.cleaned_data['SearchGillsMilk']
 
-    field_name = 'FleshCapColour'
+    field_name = 'SearchFleshCapColour'
     if field_name in form.fields:
-        q_params["FleshCapColour"] = form.cleaned_data['FleshCapColour']
+        q_params["FleshCapColour"] = form.cleaned_data['SearchFleshCapColour']
 
-    field_name = 'FleshCapBruiseColour'
+    field_name = 'SearchFleshCapBruiseColour'
     if field_name in form.fields:
-        q_params["FleshCapBruiseColour"] = form.cleaned_data['FleshCapBruiseColour']
+        q_params["FleshCapBruiseColour"] = form.cleaned_data['SearchFleshCapBruiseColour']
 
-    field_name = 'FleshCapCutColour'
+    field_name = 'SearchFleshCapCutColour'
     if field_name in form.fields:
-        q_params["FleshCapCutColour"] = form.cleaned_data['FleshCapCutColour']
+        q_params["FleshCapCutColour"] = form.cleaned_data['SearchFleshCapCutColour']
 
-    field_name = 'FleshStipeColour'
+    field_name = 'SearchFleshStipeColour'
     if field_name in form.fields:
-        q_params["FleshStipeColour"] = form.cleaned_data['FleshStipeColour']
+        q_params["FleshStipeColour"] = form.cleaned_data['SearchFleshStipeColour']
 
-    field_name = 'FleshStipeBruiseColour'
+    field_name = 'SearchFleshStipeBruiseColour'
     if field_name in form.fields:
-        q_params["FleshStipeBruiseColour"] = form.cleaned_data['FleshStipeBruiseColour']
+        q_params["FleshStipeBruiseColour"] = form.cleaned_data['SearchFleshStipeBruiseColour']
 
-    field_name = 'FleshStipeCutColour'
+    field_name = 'SearchFleshStipeCutColour'
     if field_name in form.fields:
-        q_params["FleshStipeCutColour"] = form.cleaned_data['FleshStipeCutColour']
+        q_params["FleshStipeCutColour"] = form.cleaned_data['SearchFleshStipeCutColour']
 
-    field_name = 'SporeColour'
+    field_name = 'SearchSporeColour'
     if field_name in form.fields:
-        q_params["SporeColour"] = form.cleaned_data['SporeColour']
+        q_params["SporeColour"] = form.cleaned_data['SearchSporeColour']
 
-    field_name = 'Kingdom'
+    field_name = 'SearchKingdom'
     if field_name in form.fields:
-        q_params["Kingdom"] = form.cleaned_data['Kingdom']
+        q_params["Kingdom"] = form.cleaned_data['SearchKingdom']
 
-    field_name = 'Phyum'
+    field_name = 'SearchPhyum'
     if field_name in form.fields:
-        q_params["Phyum"] = form.cleaned_data['Phyum']
+        q_params["Phyum"] = form.cleaned_data['SearchPhyum']
 
-    field_name = 'SubPhyum'
+    field_name = 'SearchSubPhyum'
     if field_name in form.fields:
-        q_params["SubPhyum"] = form.cleaned_data['SubPhyum']
+        q_params["SubPhyum"] = form.cleaned_data['SearchSubPhyum']
 
-    field_name = 'Class'
+    field_name = 'SearchClass'
     if field_name in form.fields:
-        q_params["Class"] = form.cleaned_data['Class']
+        q_params["Class"] = form.cleaned_data['SearchClass']
 
-    field_name = 'SubClass'
+    field_name = 'SearchSubClass'
     if field_name in form.fields:
-        q_params["SubClass"] = form.cleaned_data['SubClass']
+        q_params["SubClass"] = form.cleaned_data['SearchSubClass']
 
-    field_name = 'Order'
+    field_name = 'SearchOrder'
     if field_name in form.fields:
-        q_params["Order"] = form.cleaned_data['Order']
+        q_params["Order"] = form.cleaned_data['SearchOrder']
 
-    field_name = 'Family'
+    field_name = 'SearchFamily'
     if field_name in form.fields:
-        q_params["Family"] = form.cleaned_data['Family']
+        q_params["Family"] = form.cleaned_data['SearchFamily']
 
-    field_name = 'Genus'
+    field_name = 'SearchGenus'
     if field_name in form.fields:
-        q_params["Genus"] = form.cleaned_data['Genus']
+        q_params["Genus"] = form.cleaned_data['SearchGenus']
 
-    field_name = 'PoisonType'
+    field_name = 'SearchPoisonType'
     if field_name in form.fields:
-        q_params["PoisonType"] = form.cleaned_data['PoisonType']
+        q_params["PoisonType"] = form.cleaned_data['SearchPoisonType']
 
-    field_name = 'CulinaryRating'
+    field_name = 'SearchCulinaryRating'
     if field_name in form.fields:
-        q_params["CulinaryRating"] = form.cleaned_data['CulinaryRating']
+        q_params["CulinaryRating"] = form.cleaned_data['SearchCulinaryRating']
 
-    field_name = 'Odour'
+    field_name = 'SearchOdour'
     if field_name in form.fields:
-        q_params["Odour"] = form.cleaned_data['Odour']
+        q_params["Odour"] = form.cleaned_data['SearchOdour']
 
-    field_name = 'Taste'
+    field_name = 'SearchTaste'
     if field_name in form.fields:
-        q_params["Taste"] = form.cleaned_data['Taste']
+        q_params["Taste"] = form.cleaned_data['SearchTaste']
 
-    field_name = 'StatusStatusData'
+    field_name = 'SearchStatusStatusData'
     if field_name in form.fields:
-        q_params["StatusStatusData"] = form.cleaned_data['StatusStatusData']
+        q_params["StatusStatusData"] = form.cleaned_data['SearchStatusStatusData']
 
-    field_name = 'StatusWhereFound'
+    field_name = 'SearchStatusWhereFound'
     if field_name in form.fields:
-        q_params["StatusWhereFound"] = form.cleaned_data['StatusWhereFound']
+        q_params["StatusWhereFound"] = form.cleaned_data['SearchStatusWhereFound']
 
-    field_name = 'StatusRecordedInUK'
+    field_name = 'SearchStatusRecordedInUK'
     if field_name in form.fields:
-        q_params["StatusRecordedInUK"] = form.cleaned_data['StatusRecordedInUK']
+        q_params["StatusRecordedInUK"] = form.cleaned_data['SearchStatusRecordedInUK']
 
     return q_params
