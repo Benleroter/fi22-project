@@ -20,7 +20,7 @@ def fields_to_show(user_search_fields):
         fields_to_show_dict['SearchHabitatAssociations'] = forms.CharField(required=False, max_length=255, label='Associated Trees', initial='')
 
     if user_search_fields.SearchHabitatPh:
-        print('user_search_fields.HabitatPh', user_search_fields.HabitatPh)
+        #print('user_search_fields.HabitatPh', user_search_fields.HabitatPh)
         fields_to_show_dict['SearchHabitatPh'] = forms.ChoiceField(choices=PhTypeChoices, required=False, label='Ph', initial='')
 
     if user_search_fields.SearchHabitatSubstrate:

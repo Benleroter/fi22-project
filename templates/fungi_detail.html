@@ -39,7 +39,7 @@
         {% if FungiCommentsFlag == 'Yes' %}
             <div class="detail">
                 <h3>
-                    Fungi Comments:
+                    Fungi Comments::
                     {% if request.user.is_superuser %}
                         <a href="{% url 'fungi_comments' object.id %}" class="btn btn-success" style="float:right;">edit
                             Fungi Comments</a>
@@ -487,7 +487,6 @@
                     {% if StipeColour  != "NoData" %}
                         <div class="sub-content">
                             <strong>Colour: </strong>
-
                             {% if not StipeColourLinks %}
                                 {{ StipeColour }}
                             {% else %}
@@ -755,21 +754,44 @@
 
                     {% if Odour  != "NoData" %}
                         <div class="sub-content">
-                            <strong>Odour: </strong><a>{{ Odour }}</a>
+                            <strong>Odour: </strong>
+
+                            {% if not OdourLinks %}
+                                {{ Odour }}
+                            {% else %}
+
+                                {% for key,value in Odour.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     {% endif %}
 
                     {% if Taste  != "NoData" %}
                         <div class="sub-content">
-                            <strong>Taste: </strong><a>{{ Taste }}</a>
+                            <strong>Taste: </strong>
+
+                            {% if not TasteLinks %}
+                                {{ Taste }}
+                            {% else %}
+
+                                {% for key,value in Taste.items %}
+                                    {% if 'item' in key %}
+                                        {{ value }}
+                                    {% endif %}
+                                    {% if 'link' in key %}
+                                        <a href={{ value.0 }}>{{ value.1 }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     {% endif %}
 
-                    {% if PoisonType  != "NoData" %}
-                        <div class="sub-content">
-                            <strong>Poison Type: </strong><a>{{ PoisonType }}</a>
-                        </div>
-                    {% endif %}
 
                     {% if CuisineComments  != "no comments" %}
                         <div class="sub-content">
@@ -1218,13 +1240,6 @@
                         </div>
                     {% endif %}
 
-
-                    {% if RecordedInUK  != "NoData" %}
-                        <div class="sub-content">
-                            <strong>Recorded In UK: </strong><a>{{ RecordedInUK }}</a>
-                        </div>
-                    {% endif %}
-
                     {% if StatusComments  != "no comments" %}
                         <div class="sub-content">
                             <strong>StatusComments: </strong><a>{{ StatusComments }}</a>
@@ -1246,7 +1261,7 @@
 
 
         <!-- PoresAndTubes -->
-        {% if ShowPoresAndTubesFlag == 'Yes' and PoresPresent == 'Yes' %}
+        {% if ShowPoresAndTubesFlag == 'Yes' and PoresPresent == 'Yes'  and  PoreData != 'noPoreData' %}
             <div class="detail">
                 <h3>
                     Pores and Tubes:
@@ -1408,7 +1423,7 @@
         {% endif %}
 
         <!-- Gills -->
-        {% if ShowGillsFlag == 'Yes' and GillsPresent == 'Yes' %}
+        {% if ShowGillsFlag == 'Yes' and GillsPresent == 'Yes' and  GillData != 'noGillData' %}
             <div class="detail">
                 <h3>
                     Gills/Hymenium-Lamellae:
@@ -1426,118 +1441,122 @@
                     {% endfor %}
                 </h3>
                 <h5>
-                    {% if GillsPresent  != "NoData" %}
-                        <div class="sub-content">
-                            <strong>Colour: </strong>
-                            {% if not GillsColourLinks %}
-                                {{ GillsColour }}
-                            {% else %}
-                                {% for key,value in GillsColour.items %}
-                                    {% if 'item' in key %}
-                                        {{ value }}
-                                    {% endif %}
-                                    {% if 'link' in key %}
-                                        <a href={{ value.0 }}>{{ value.1 }}</a>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                    {% endif %}
+                    {% if GillsPresent  != "NoData" or  GillsPresent  != "No" %}
 
-                    {% if GillsBruiseColour  != "NoData" %}
-                        <div class="sub-content">
-                            <strong>Bruise Colour: </strong>
-                            {% if not GillsBruiseColourLinks %}
-                                {{ GillsBruiseColour }}
-                            {% else %}
-                                {% for key,value in GillsBruiseColour.items %}
-                                    {% if 'item' in key %}
-                                        {{ value }}
-                                    {% endif %}
-                                    {% if 'link' in key %}
-                                        <a href={{ value.0 }}>{{ value.1 }}</a>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-                    {% endif %}
 
-                    {% if GillsCutColour  != "NoData" %}
-                        <div class="sub-content">
-                            <strong>Cut Colour: </strong>
-                            {% if not GillsCutColourLinks %}
-                                {{ GillsCutColour }}
-                            {% else %}
-                                {% for key,value in GillsCutColour.items %}
-                                    {% if 'item' in key %}
-                                        {{ value }}
+                            {% if GillsColour  != "NoData" %}
+                                <div class="sub-content">
+                                    <strong>Colour: </strong>
+                                    {% if not GillsColourLinks %}
+                                        {{ GillsColour }}
+                                    {% else %}
+                                        {% for key,value in GillsColour.items %}
+                                            {% if 'item' in key %}
+                                                {{ value }}
+                                            {% endif %}
+                                            {% if 'link' in key %}
+                                                <a href={{ value.0 }}>{{ value.1 }}</a>
+                                            {% endif %}
+                                        {% endfor %}
                                     {% endif %}
-                                    {% if 'link' in key %}
-                                        <a href={{ value.0 }}>{{ value.1 }}</a>
-                                    {% endif %}
-                                {% endfor %}
+                                </div>
                             {% endif %}
-                        </div>
-                    {% endif %}
-
-                    {% if GillsAttachment  != "NoData" %}
-                        <div class="sub-content">
-                            <strong>Attachment: </strong>
-                            {% if not GillsAttachmentLinks %}
-                                {{ GillsAttachment }}
-                            {% else %}
-                                {% for key,value in GillsAttachment.items %}
-                                    {% if 'item' in key %}
-                                        {{ value }}
+                        
+                            {% if GillsBruiseColour  != "NoData" %}
+                                <div class="sub-content">
+                                    <strong>Bruise Colour: </strong>
+                                    {% if not GillsBruiseColourLinks %}
+                                        {{ GillsBruiseColour }}
+                                    {% else %}
+                                        {% for key,value in GillsBruiseColour.items %}
+                                            {% if 'item' in key %}
+                                                {{ value }}
+                                            {% endif %}
+                                            {% if 'link' in key %}
+                                                <a href={{ value.0 }}>{{ value.1 }}</a>
+                                            {% endif %}
+                                        {% endfor %}
                                     {% endif %}
-                                    {% if 'link' in key %}
-                                        <a href={{ value.0 }}>{{ value.1 }}</a>
-                                    {% endif %}
-                                {% endfor %}
+                                </div>
                             {% endif %}
-                        </div>
-                    {% endif %}
-
-                    {% if GillsArrangement  != "NoData" %}
-                        <div class="sub-content">
-                            <strong>Arrangement: </strong>
-                            {% if not GillsArrangementLinks %}
-                                {{ GillsArrangement }}
-                            {% else %}
-                                {% for key,value in GillsArrangement.items %}
-                                    {% if 'item' in key %}
-                                        {{ value }}
+        
+                            {% if GillsCutColour  != "NoData" %}
+                                <div class="sub-content">
+                                    <strong>Cut Colour: </strong>
+                                    {% if not GillsCutColourLinks %}
+                                        {{ GillsCutColour }}
+                                    {% else %}
+                                        {% for key,value in GillsCutColour.items %}
+                                            {% if 'item' in key %}
+                                                {{ value }}
+                                            {% endif %}
+                                            {% if 'link' in key %}
+                                                <a href={{ value.0 }}>{{ value.1 }}</a>
+                                            {% endif %}
+                                        {% endfor %}
                                     {% endif %}
-                                    {% if 'link' in key %}
-                                        <a href={{ value.0 }}>{{ value.1 }}</a>
-                                    {% endif %}
-                                {% endfor %}
+                                </div>
                             {% endif %}
-                        </div>
-                    {% endif %}
-
-                    {% if GillsMilk  != "NoData" %}
-                        <div class="sub-content">
-                            <strong>Milk: </strong><a>{{ GillsMilk }}</a>
-                        </div>
-                    {% endif %}
-
-                    {% if GillsComments  != "no comments" %}
-                        <div class="sub-content">
-                            <strong>Comments: </strong>
-                            {% if not GillsCommentsLinks %}
-                                {{ GillsComments }}
-                            {% else %}
-                                {% for key,value in GillsComments.items %}
-                                    {% if 'item' in key %}
-                                        {{ value }}
+        
+                            {% if GillsAttachment  != "NoData" %}
+                                <div class="sub-content">
+                                    <strong>Attachment: </strong>
+                                    {% if not GillsAttachmentLinks %}
+                                        {{ GillsAttachment }}
+                                    {% else %}
+                                        {% for key,value in GillsAttachment.items %}
+                                            {% if 'item' in key %}
+                                                {{ value }}
+                                            {% endif %}
+                                            {% if 'link' in key %}
+                                                <a href={{ value.0 }}>{{ value.1 }}</a>
+                                            {% endif %}
+                                        {% endfor %}
                                     {% endif %}
-                                    {% if 'link' in key %}
-                                        <a href={{ value.0 }}>{{ value.1 }}</a>
-                                    {% endif %}
-                                {% endfor %}
+                                </div>
                             {% endif %}
-                        </div>
+        
+                            {% if GillsArrangement  != "NoData" %}
+                                <div class="sub-content">
+                                    <strong>Arrangement: </strong>
+                                    {% if not GillsArrangementLinks %}
+                                        {{ GillsArrangement }}
+                                    {% else %}
+                                        {% for key,value in GillsArrangement.items %}
+                                            {% if 'item' in key %}
+                                                {{ value }}
+                                            {% endif %}
+                                            {% if 'link' in key %}
+                                                <a href={{ value.0 }}>{{ value.1 }}</a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+        
+                            {% if GillsMilk  != "NoData" %}
+                                <div class="sub-content">
+                                    <strong>Milk: </strong><a>{{ GillsMilk }}</a>
+                                </div>
+                             {% endif %}
+        
+                            {% if GillsComments  != "no comments" %}
+                                <div class="sub-content">
+                                    <strong>Comments: </strong>
+                                    {% if not GillsCommentsLinks %}
+                                        {{ GillsComments }}
+                                    {% else %}
+                                        {% for key,value in GillsComments.items %}
+                                            {% if 'item' in key %}
+                                                {{ value }}
+                                            {% endif %}
+                                            {% if 'link' in key %}
+                                                <a href={{ value.0 }}>{{ value.1 }}</a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
                     {% endif %}
                 </h5>
             </div>

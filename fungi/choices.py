@@ -1,10 +1,17 @@
 GillsPresentChoices = [
     ("initial", ""),
     ("NoData", "NoData"),
-    ("Sex on the backseat", "Sex on the backseat"),
     ("Yes", "Yes"),
     ("No", "No")
 ]
+
+PoresPresentChoices = [
+    ("initial", ""),
+    ("NoData", "NoData"),
+    ("Yes", "Yes"),
+    ("No", "No")
+]
+
 
 ReticulationChoices = [
     ("initial", ""),

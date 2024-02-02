@@ -89,13 +89,11 @@ class FungiNotes(models.Model):
         app_label = "fungi"
 
     def __str__(self):
-        return str(self.id) + ', ' + str(self.User) + ', ' + self.Fungi.CommonName + ', ' + str(self.Fungi.id) + ', ' + self.MonthFound + ', ' + str(self.NoteUser)
+        return str(self.Note)+', '+str(self.id) + ', ' + str(self.User) + ', ' + self.Fungi.CommonName + ', ' + str(self.Fungi.id) + ', ' + self.MonthFound + ', ' + str(self.NoteUser)
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.Fungi_id)
-            # print('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT')
-        # print('RRRRRRRRRRRRRRRRRRRRRRRRRRR')
         user = get_current_user()  # https://django-crum.readthedocs.io/en/latest/  -  method to get current user details in models with request.  Use "get_current user" - see  MIDDLEWARE in settings
         # self.Fungi = 1
         if user and not user.pk:
@@ -213,7 +211,7 @@ class LatinSynonyms(models.Model):
 
 class FungiComments(models.Model):
     Fungi = models.ForeignKey(Fungi, max_length=255, blank=False, null=False, on_delete=models.CASCADE, related_name='fungi_comments')
-    Comments = models.CharField(max_length=5000, blank=True, null=True, default='no comments')
+    Comments = models.CharField(max_length=5000, blank=True, null=False, default='no comments')
     slug = models.SlugField(null=True)
 
     class Meta:
@@ -225,9 +223,12 @@ class FungiComments(models.Model):
         app_label = "fungi"
 
     def __str__(self):
+
         return self.Fungi.CommonName + ', Comments: ' + self.Comments
 
     def save(self, *args, **kwargs):
+        if  self.Comments == "":
+            self.Comments = "no comments"
         if not self.slug:
             self.slug = slugify(self.Fungi_id)
         return super().save(*args, **kwargs)
@@ -305,14 +306,14 @@ class Habitat(models.Model):
 class FruitingBody(models.Model):
     Fungi = models.ForeignKey(Fungi, max_length=255, blank=False, null=False, on_delete=models.CASCADE, related_name='fungi_fruitingbody')
     Colour = models.CharField(max_length=1028, blank=True, default='NoData', null=True)
-    Shape = models.CharField(max_length=255, blank=True, default='NoData', null=True)
-    Rim = models.CharField(max_length=255, blank=True, default='NoData', null=True)
-    CapTexture = models.CharField(max_length=255, blank=True, default='NoData', null=True)
+    Shape = models.CharField(max_length=2048, blank=True, default='NoData', null=True)
+    Rim = models.CharField(max_length=2048, blank=True, default='NoData', null=True)
+    CapTexture = models.CharField(max_length=2048, blank=True, default='NoData', null=True)
     BruiseColour = models.CharField(max_length=255, blank=True, default='NoData', null=True)
     CutColour = models.CharField(max_length=255, blank=True, default='NoData', null=True)
     WidthMin = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0.00, null=True)
     WidthMax = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0.00, null=True)
-    Comments = models.CharField(max_length=2048, blank=True, null=True, default='no comments')
+    Comments = models.CharField(max_length=5000, blank=True, null=True, default='no comments')
     slug = models.SlugField(null=True)
 
     class Meta:
@@ -344,14 +345,14 @@ class Stipe(models.Model):
     LengthMax = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0.00, null=True)  #
     ThicknessMin = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0.00, null=True)
     ThicknessMax = models.DecimalField(max_digits=5, decimal_places=2, blank=True, default=0.00, null=True)
-    Shape = models.CharField(max_length=255, blank=True, default='NoData', null=True)
+    Shape = models.CharField(max_length=2048, blank=True, default='NoData', null=True)
     ReticulationPresent = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    Reticulation = models.CharField(max_length=2048, blank=True, null=True, default='NoData')
-    Base = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    Texture = models.CharField(max_length=255, blank=True, null=True, default='NoData')
+    Reticulation = models.CharField(max_length=5000, blank=True, null=True, default='NoData')
+    Base = models.CharField(max_length=2048, blank=True, null=True, default='NoData')
+    Texture = models.CharField(max_length=2048, blank=True, null=True, default='NoData')
     Ring = models.CharField(max_length=20, blank=True, null=True, default='NoData')
     # Ring = models.CharField(max_length=20, choices=RingPresentChoices, blank=True, null=True, default='NoData')
-    RingDescription = models.CharField(max_length=255, blank=True, null=True, default='NoData')
+    RingDescription = models.CharField(max_length=2048, blank=True, null=True, default='NoData')
     slug = models.SlugField(null=True)
     # Volva = models.CharField(max_length=20, choices=VolvaChoices, blank=True, null=True, default='NoData')
     Volva = models.CharField(max_length=20, blank=True, null=True, default='NoData')
@@ -367,7 +368,8 @@ class Stipe(models.Model):
         app_label = "fungi"
 
     def __str__(self):
-        return str(self.Fungi) + ', LM:' + str(self.LengthMax)
+        #return str(self.Fungi) + ', LM:' + str(self.LengthMax)
+        return str(self.Fungi)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -380,8 +382,8 @@ class Stipe(models.Model):
 
 class PoresAndTubes(models.Model):
     Fungi = models.ForeignKey(Fungi, max_length=255, blank=False, null=False, on_delete=models.CASCADE, related_name='fungi_pores')
-    PoresPresent = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    # PoresPresent = models.CharField(max_length=20, choices=PoresPresentChoices, blank=True, null=True, default='No')
+    #PoresPresent = models.CharField(max_length=255, blank=True, null=True, default='NoData')
+    PoresPresent = models.CharField(max_length=20, choices=PoresPresentChoices, blank=True, null=True, default='No')
     PoreColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
     PoreShape = models.CharField(max_length=255, blank=True, null=True, default='NoData')
     PoreBruiseColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
@@ -389,8 +391,8 @@ class PoresAndTubes(models.Model):
     TubeShape = models.CharField(max_length=255, blank=True, null=True, default='NoData')
     TubeBruiseColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
     # Milk = models.CharField(max_length=20, choices=MilkPresentChoices, blank=True, null=True, default='NoData')
-    Milk = models.CharField(max_length=20, blank=True, null=True, default='NoData')
-    Comments = models.CharField(max_length=2048, blank=True, null=True, default='no comments')
+    PoreMilk = models.CharField(max_length=20, blank=True, null=True, default='NoData')
+    Comments = models.CharField(max_length=5000, blank=True, null=True, default='no comments')
     slug = models.SlugField(null=True)
 
     class Meta:
@@ -402,7 +404,9 @@ class PoresAndTubes(models.Model):
         app_label = "fungi"
 
     def __str__(self):
-        return self.Fungi.CommonName
+        return  str(self.Fungi)
+
+
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -415,15 +419,16 @@ class PoresAndTubes(models.Model):
 
 class Gills(models.Model):
     Fungi = models.ForeignKey(Fungi, max_length=255, blank=False, null=False, on_delete=models.CASCADE, related_name='fungi_gills')
+    #GillsData = models.BooleanField(default=False)
     GillsPresent = models.CharField(max_length=20, choices=GillsPresentChoices, blank=True, null=True, default='No')
-    Colour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    BruiseColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    CutColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    Attachment = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    Arrangement = models.CharField(max_length=255, blank=True, null=True, default='NoData')
+    GillColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
+    GillBruiseColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
+    GillCutColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
+    GillAttachment = models.CharField(max_length=255, blank=True, null=True, default='NoData')
+    GillArrangement = models.CharField(max_length=255, blank=True, null=True, default='NoData')
     # Milk = models.CharField(max_length=20, choices=MilkPresentChoices, blank=True, null=True, default='NoData')
-    Milk = models.CharField(max_length=20, blank=True, null=True, default='NoData')
-    Comments = models.CharField(max_length=2048, blank=True, null=True, default='no comments')
+    GillMilk = models.CharField(max_length=20, blank=True, null=True, default='NoData')
+    GillComments = models.CharField(max_length=5000, blank=True, null=True, default='no comments')
     slug = models.SlugField(null=True)
 
     class Meta:
@@ -435,7 +440,36 @@ class Gills(models.Model):
         app_label = "fungi"
 
     def __str__(self):
-        return self.Fungi.CommonName + ", Colour: " + self.Colour
+      #  return self.Fungi.CommonName
+        return self.Fungi.CommonName + ', GillColour:' + self.GillColour  + ', GillAttachment:'+ self.GillAttachment
+
+        #return self.Fungi.CommonName + ', ' + self.LatinSynonym
+        #return str(self.Fungi)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.Fungi_id)
+        return super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('FungiDetail-Page', kwargs={'slug': self.slug})
+
+class Spores(models.Model):
+    Fungi = models.ForeignKey(Fungi, max_length=255, blank=False, null=False, on_delete=models.CASCADE, related_name='fungi_spores')
+    Colour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
+    Comments = models.CharField(max_length=5000, blank=True, null=True, default='no comments')
+    slug = models.SlugField(null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'Spores'
+        verbose_name = "Spores"
+        verbose_name_plural = "Spores"
+        ordering = ['Fungi']
+        app_label = "fungi"
+
+    def __str__(self):
+        return self.Fungi.CommonName + ", spore print colour: " + self.Colour
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -454,7 +488,7 @@ class Flesh(models.Model):
     FleshStipeColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
     FleshStipeBruiseColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
     FleshStipeCutColour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    Comments = models.CharField(max_length=2048, blank=True, null=True, default='no comments')
+    Comments = models.CharField(max_length=5000, blank=True, null=True, default='no comments')
     slug = models.SlugField(null=True)
 
     class Meta:
@@ -477,30 +511,7 @@ class Flesh(models.Model):
         return reverse('FungiDetail-Page', kwargs={'slug': self.slug})
 
 
-class Spores(models.Model):
-    Fungi = models.ForeignKey(Fungi, max_length=255, blank=False, null=False, on_delete=models.CASCADE, related_name='fungi_spores')
-    Colour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    Comments = models.CharField(max_length=2048, blank=True, null=True, default='no comments')
-    slug = models.SlugField(null=True)
 
-    class Meta:
-        managed = True
-        db_table = 'Spores'
-        verbose_name = "Spores"
-        verbose_name_plural = "Spores"
-        ordering = ['Fungi']
-        app_label = "fungi"
-
-    def __str__(self):
-        return self.Fungi.CommonName + ", spore print colour: " + self.Colour
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.Fungi_id)
-        return super().save(*args, **kwargs)
-
-    def get_absolute_url(self):
-        return reverse('FungiDetail-Page', kwargs={'slug': self.slug})
 
 
 class NetLinks(models.Model):
@@ -584,7 +595,7 @@ class Cuisine(models.Model):
     CulinaryRating = models.CharField(max_length=255, blank=True, null=True, default='NoData')
     Odour = models.CharField(max_length=255, blank=True, null=True, default='NoData')
     Taste = models.CharField(max_length=255, blank=True, null=True, default='NoData')
-    Comments = models.CharField(max_length=2048, blank=True, null=True, default='no comments')
+    Comments = models.CharField(max_length=5000, blank=True, null=True, default='no comments')
     slug = models.SlugField(null=True)
 
     class Meta:
@@ -644,7 +655,7 @@ class Status(models.Model):
     Fungi = models.ForeignKey(Fungi, max_length=255, blank=False, null=False, on_delete=models.CASCADE, related_name='fungi_Status')
     StatusData = models.CharField(max_length=255, blank=True, null=True, verbose_name='Status', default='NoData')
     WhereFound = models.CharField(max_length=255, blank=True, null=True, verbose_name='Where found', default='NoData')
-    StatusComments = models.CharField(max_length=2048, blank=True, null=True, verbose_name='Comments', default='no comments')
+    StatusComments = models.CharField(max_length=5000, blank=True, null=True, verbose_name='Comments', default='no comments')
     slug = models.SlugField(null=True)
 
     class Meta:

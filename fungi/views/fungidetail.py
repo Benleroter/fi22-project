@@ -5,6 +5,7 @@ from django.contrib.auth.models import User  # AnonymousUser
 from fungi.views.insertglossarylinks import insertglossarylinks
 from fungi.views.insertfunginamelinks import insertfunginamelinks
 from django.db.models import Q
+from django.apps import apps
 
 
 class FungiDetail(DetailView):
@@ -19,16 +20,23 @@ class FungiDetail(DetailView):
         def data_present(fungi_attribute):
             dp = 'True'
             context_var = [f for f in fungi_attribute._meta.get_fields() if f.name not in ['id', 'DataPresent', 'Fungi', 'slug']]
+            #context_var = [f for f in fungi_attribute._meta.get_fields() ]
+            print('Context_var', context_var)
             for c in context_var:
                 field_value = getattr(fungi_attribute, c.name, None)
+                print('c: ', c.name)
+                print('field_value: ', field_value)
                 if field_value is None:
                     field_value = 'NoData'
-                if field_value == 'NoData' or field_value == 0.00 or field_value == 'no comments' or field_value == 'NoData' or field_value == 0 or field_value == '0':
+                if field_value == 'NoData' or field_value == 0.00 or field_value == 'no comments' or field_value == 'NoData' :
                     dp = False
                 else:
                     dp = 'True'
                     break
             return dp
+
+
+
 
         # retrieving user id's to get filter preferences
         if self.request.user.is_authenticated:
@@ -38,47 +46,13 @@ class FungiDetail(DetailView):
             usershowsettings = Show.objects.get(user_id=currentuser.id)
         else:
             currentuser = User.objects.get(username='GuestUser')
-            print('uid-1', currentuser)
+            #print('uid-1', currentuser)
             usershowsettings = Show.objects.get(user_id=currentuser.id)
 
         # LINKS
         retrievedobjects = NetLinks.objects.filter(Fungi_id=self.object).distinct().order_by('OrderToDisplay')
         if retrievedobjects:
             context['NetLinks'] = retrievedobjects
-
-        # PERSONAL NOTES
-        pid = FungiNotes.objects.filter(Fungi_id=self.object).first()
-        currentuser = self.request.user
-        print('currentuser = ', currentuser.username)
-        print('currentuser = ', currentuser.id)
-
-        if pid is not None and usershowsettings.ShowFungiNotes:
-            print('AAAA')
-            if self.request.user.is_superuser:
-                print('BBBB')
-                retrievedobjects = FungiNotes.objects.filter(Fungi_id=self.object, )
-                #'print('retrievedobjects-A1 = ', retrievedobjects)
-                countera = 1
-                for count in retrievedobjects:
-                    count.NoteCount = countera
-                    countera += 1
-                #print('retrievedobjects-A2= ', retrievedobjects)
-            else:
-                print('CCCC')
-                retrievedobjects = FungiNotes.objects.filter(Q(NoteUser=currentuser.id) & Q(Fungi_id=self.object.id))
-                #print('retrievedobjects-B1a = ', retrievedobjects)
-                # retrievedobjects = FungiNotes.objects.filter(NoteUser=currentuser.id)
-                # print('retrievedobjects-B1b = ', retrievedobjects)
-                counterb = 1
-                for count in retrievedobjects:
-                    count.NoteCount = counterb
-                    counterb += 1
-                #print('retrievedobjects-B2 = ', retrievedobjects)
-
-            if retrievedobjects:
-                context['FungiNotesFlag'] = 'Yes'
-                context['data_to_display'] = True
-                context['Notes'] = retrievedobjects
 
         # PICTURES
         retrievedobjects = Picture.objects.get(Fungi_id=self.object)
@@ -93,6 +67,7 @@ class FungiDetail(DetailView):
             context['data_to_display'] = True
             if usershowsettings.ShowHabitat:
                 retrievedobjects = Habitat.objects.get(Fungi_id=self.object)
+                print('HABITAT: retrievedobjects', retrievedobjects)
                 for i in DetailSources.objects.filter(Fungi_id=self.object):
                     #print('self.object', self.object)
                     #print('self.DetailSources.objects', i.Detail)
@@ -105,9 +80,12 @@ class FungiDetail(DetailView):
 
                 if retrievedobjects.Associations == 'NoData':
                     context['Associations'] = retrievedobjects.Associations
+                    print('Ass-1', retrievedobjects.Associations)
                 else:
+                    print('Ass-2', retrievedobjects.Associations)
                     context['Associations'] = insertglossarylinks(retrievedobjects.Associations)[0]
                     context['AssociationsLinks'] = insertglossarylinks(retrievedobjects.Associations)[1]
+                    print('AssociationsLinks', context['AssociationsLinks'])
 
                 if retrievedobjects.Ph == 'NoData':
                     context['Ph'] = retrievedobjects.Ph
@@ -148,24 +126,80 @@ class FungiDetail(DetailView):
 
             # print('context....Associations::::',  context['Associations'])
 
+        # PERSONAL NOTES
+        pid = FungiNotes.objects.filter(Fungi_id=self.object).first()
+        currentuser = self.request.user
+        #print('currentuser = ', currentuser.username)
+        #print('currentuser = ', currentuser.id)
+
+        if pid is not None and usershowsettings.ShowFungiNotes:
+            print('AAAA')
+            if self.request.user.is_superuser:
+                #print('BBBB')
+                retrievedobjects = FungiNotes.objects.filter(Fungi_id=self.object, )
+                #print('retrievedobjects-A1 = ', retrievedobjects)
+                #print('retrievedobjects-C1 = ', insertfunginamelinks(retrievedobjects[0].Note)[0])
+                #print('retrievedobjects-C1 = ', insertfunginamelinks(retrievedobjects[0].Note)[1])
+                #print('retrievedobjects-C1 = ', insertfunginamelinks(retrievedobjects[1].Note))
+                countera = 1
+                for count in retrievedobjects:
+                    count.NoteCount = countera
+                    countera += 1
+                #print('retrievedobjects-A2= ', retrievedobjects)
+            else:
+                #print('CCCC')
+                retrievedobjects = FungiNotes.objects.filter(Q(NoteUser=currentuser.id) & Q(Fungi_id=self.object.id))
+                #print('retrievedobjects-B1a = ', retrievedobjects[0].Note)
+                #print('retrievedobjects-C1a = ',  insertfunginamelinks(retrievedobjects[0].Note[0]))
+                # retrievedobjects = FungiNotes.objects.filter(NoteUser=currentuser.id)
+                print('retrievedobjects-B1b = ', retrievedobjects)
+                counterb = 1
+                for count in retrievedobjects:
+                    count.NoteCount = counterb
+                    counterb += 1
+                #print('retrievedobjects-B2 = ', retrievedobjects)
+
+            if retrievedobjects:
+                context['FungiNotesFlag'] = 'Yes'
+                context['FungiNotesLinks'] = retrievedobjects
+                context['data_to_display'] = True
+                context['Notes'] = retrievedobjects
+                #print('retrievedobjects-CC1 = ', retrievedobjects)
+                #print('retrievedobjects-C1 = ', insertfunginamelinks(retrievedobjects[0].Note)[0])
+                #print('retrievedobjects-C2 = ', insertfunginamelinks(retrievedobjects[0].Note)[1])
+                context['FungiNotes'] =  insertfunginamelinks(retrievedobjects[0].Note)[0]
+                context['FungiNoteLinks'] = insertfunginamelinks(retrievedobjects[0].Note)[1]
+                #print('context["Notes"]',context['Notes'])
+                #print('context[FungiNotes]', context['FungiNotes'])
+                #print('context["FungiNoteLinks"]', context['FungiNoteLinks'])
+
         # FUNGI COMMENTS
         fungicommentssourceslist = []
         pid = FungiComments.objects.get(Fungi_id=self.object)
+        print('FUNGI COMMENTS-TEST6', pid)
         if data_present(pid):
+            print('FUNGI COMMENTS-TEST5')
             context['FungiCommentsFlag'] = 'Yes'
             if usershowsettings.ShowFungiComments:
+                #print('FUNGI COMMENTS-TEST4')
                 retrievedobjects = FungiComments.objects.get(Fungi_id=self.object)
+               # print('FUNGI COMMENTS-TEST7', retrievedobjects)
                 for i in DetailSources.objects.filter(Fungi_id=self.object):
                     if i.Detail == "Comments":
                         fungicommentssourceslist.append(i.Source)
+                        #print('FUNGI COMMENTS-TEST3', i.Source)
                 context['FungiCommentsSourcesList'] = fungicommentssourceslist
 
                 if retrievedobjects.Comments == 'no comments':
                     context['FungiComments'] = retrievedobjects.Comments
+                    #print('FUNGI COMMENTS-TEST1', insertfunginamelinks(retrievedobjects.Comments)[0])
                 else:
                     context['FungiComments'] = insertfunginamelinks(retrievedobjects.Comments)[0]
-                    # print('TEST', insertfunginamelinks(retrievedobjects.Comments)[0] )
+                    #print('context[FungiComments]', context['FungiComments'])
+                    #print('FUNGI COMMENTS-TEST2', insertfunginamelinks(retrievedobjects.Comments)[0] )
                     context['FungiCommentsLinks'] = insertfunginamelinks(retrievedobjects.Comments)[1]
+                    #print('context[FungiCommentsLinks]', context['FungiCommentsLinks'])
+                    #print('FUNGI COMMENTS-TEST3', insertfunginamelinks(retrievedobjects.Comments)[1])
 
                     # print('FungiComments', context['FungiComments'])
                     # print('FungiCommentsLinks', context['FungiCommentsLinks'])
@@ -273,7 +307,12 @@ class FungiDetail(DetailView):
             context['data_to_display'] = True
             if usershowsettings.ShowLatinSynonyms:
                 retrievedobjects = LatinSynonyms.objects.filter(Fungi_id=self.object).distinct()
+                #print('Fungi_id', DetailSources.objects.filter(Fungi_id=self.object))
                 for i in DetailSources.objects.filter(Fungi_id=self.object):
+                    #print('DetailSources.objects.filter(Fungi_id=self.object)',DetailSources.objects.filter(Fungi_id=self.object))
+                    #print('retrievedobjects', retrievedobjects )
+                    #print('i.detail', i.Detail)
+
                     if i.Detail == "LatinSynonyms":
                         latinsynonymssourceslist.append(i.Source)
                 context['LatinSynonymsSourcesList'] = latinsynonymssourceslist
@@ -287,7 +326,9 @@ class FungiDetail(DetailView):
         # CLASSIFICATION
         classificationsourceslist = []
         pid = Classification.objects.filter(Fungi_id=self.object).first()
+        #print('data_present-1',pid)
         if data_present(pid):
+            #print('data_present-2',pid)
             # if DataPresent(Classification.objects.get(Fungi_id= self.object)):
             context['ShowClassificationFlag'] = 'Yes'
             context['data_to_display'] = True
@@ -395,6 +436,7 @@ class FungiDetail(DetailView):
         # STIPE
         stipesourceslist = []
         pid = Stipe.objects.filter(Fungi_id=self.object).first()
+        print('StipeData-1:', pid)
         if data_present(pid):
             # if DataPresent(Stipe.objects.get(Fungi_id= self.object)):
             context['ShowStipeFlag'] = 'Yes'
@@ -525,6 +567,7 @@ class FungiDetail(DetailView):
             # if DataPresent(PoresAndTubes.objects.get(Fungi_id= self.object)):
             context['ShowPoresAndTubesFlag'] = 'Yes'
             context['data_to_display'] = True
+            context['PoreData'] = 'noPoreData'
             if usershowsettings.ShowPoresAndTubes:
                 retrievedobjects = PoresAndTubes.objects.get(Fungi_id=self.object)
                 for i in DetailSources.objects.filter(Fungi_id=self.object):
@@ -539,44 +582,58 @@ class FungiDetail(DetailView):
                 else:
                     context['PoreColour'] = insertglossarylinks(retrievedobjects.PoreColour)[0]
                     context['PoreColourLinks'] = insertglossarylinks(retrievedobjects.PoreColour)[1]
+                    context['PoreData'] = 'PoreDataPresent'
 
                 if retrievedobjects.PoreShape == 'NoData':
                     context['PoreShape'] = retrievedobjects.PoreShape
                 else:
                     context['PoreShape'] = insertglossarylinks(retrievedobjects.PoreShape)[0]
                     context['PoreShapeLinks'] = insertglossarylinks(retrievedobjects.PoreShape)[1]
+                    context['PoreData'] = 'PoreDataPresent'
 
                 if retrievedobjects.PoreBruiseColour == 'NoData':
                     context['PoreBruiseColour'] = retrievedobjects.PoreBruiseColour
                 else:
                     context['PoreBruiseColour'] = insertglossarylinks(retrievedobjects.PoreBruiseColour)[0]
                     context['PoreBruiseColourLinks'] = insertglossarylinks(retrievedobjects.PoreBruiseColour)[1]
+                    context['PoreData'] = 'PoreDataPresent'
 
                 if retrievedobjects.TubeColour == 'NoData':
                     context['TubeColour'] = retrievedobjects.TubeColour
                 else:
                     context['TubeColour'] = insertglossarylinks(retrievedobjects.TubeColour)[0]
                     context['TubeColourLinks'] = insertglossarylinks(retrievedobjects.TubeColour)[1]
+                    context['PoreData'] = 'PoreDataPresent'
 
                 if retrievedobjects.TubeShape == 'NoData':
                     context['TubeShape'] = retrievedobjects.TubeShape
                 else:
                     context['TubeShape'] = insertglossarylinks(retrievedobjects.TubeShape)[0]
                     context['TubeShapeLinks'] = insertglossarylinks(retrievedobjects.TubeShape)[1]
+                    context['PoreData'] = 'PoreDataPresent'
 
                 if retrievedobjects.TubeBruiseColour == 'NoData':
                     context['TubeBruiseColour'] = retrievedobjects.TubeBruiseColour
                 else:
                     context['TubeBruiseColour'] = insertglossarylinks(retrievedobjects.TubeBruiseColour)[0]
                     context['TubeBruiseColourLinks'] = insertglossarylinks(retrievedobjects.TubeBruiseColour)[1]
+                    context['PoreData'] = 'PoreDataPresent'
 
-                context['PoreMilk'] = retrievedobjects.Milk
+                if retrievedobjects.PoreMilk == 'NoData':
+                    context['PoreMilk'] = retrievedobjects.PoreMilk
+                else:
+                    context['PoreMilk'] = insertglossarylinks(retrievedobjects.PoreMilk)[0]
+                    context['PoreMilkLinks'] = insertglossarylinks(retrievedobjects.PoreMilk)[1]
+                    context['PoreMilk'] = 'PoreDataPresent'
+
+                #context['PoreMilk'] = retrievedobjects.Milk
 
                 if retrievedobjects.Comments == 'no comments':
                     context['PoreComments'] = retrievedobjects.Comments
                 else:
                     context['PoreComments'] = insertglossarylinks(retrievedobjects.Comments)[0]
                     context['PoreCommentsLinks'] = insertglossarylinks(retrievedobjects.Comments)[1]
+                    context['PoreData'] = 'PoreDataPresent'
 
                 context['ShowPoresAndTubesFlag'] = 'Yes'
             else:
@@ -587,62 +644,80 @@ class FungiDetail(DetailView):
         # GILLS
         gillssourceslist = []
         pid = Gills.objects.filter(Fungi_id=self.object).first()
+        #if data_present(pid):
+        print('GillsData-1:', pid)
         if data_present(pid):
+            #print('GillsData-2:', pid)
             # if DataPresent(Gills.objects.get(Fungi_id= self.object)):
             context['ShowGillsFlag'] = 'Yes'
             context['data_to_display'] = True
+            context['GillData'] = 'noGillData'
             if usershowsettings.ShowGills:
                 retrievedobjects = Gills.objects.get(Fungi_id=self.object)
                 for i in DetailSources.objects.filter(Fungi_id=self.object):
                     if i.Detail == "Gills":
                         gillssourceslist.append(i.Source)
                 context['GillsSourcesList'] = gillssourceslist
-
-                if retrievedobjects.Colour == 'NoData':
-                    context['GillsColour'] = retrievedobjects.Colour
-                else:
-                    context['GillsColour'] = insertglossarylinks(retrievedobjects.Colour)[0]
-                    context['GillsColourLinks'] = insertglossarylinks(retrievedobjects.Colour)[1]
-
                 context['GillsPresent'] = retrievedobjects.GillsPresent
-
-                if retrievedobjects.BruiseColour == 'NoData':
-                    context['GillsBruiseColour'] = retrievedobjects.BruiseColour
+                if retrievedobjects.GillColour == 'NoData':
+                    context['GillsColour'] = retrievedobjects.GillColour
                 else:
-                    context['GillsBruiseColour'] = insertglossarylinks(retrievedobjects.BruiseColour)[0]
-                    context['GillsBruiseColourLinks'] = insertglossarylinks(retrievedobjects.BruiseColour)[1]
+                    context['GillsColour'] = insertglossarylinks(retrievedobjects.GillColour)[0]
+                    context['GillsColourLinks'] = insertglossarylinks(retrievedobjects.GillColour)[1]
+                    context['GillData'] = 'GillDataPresent'
 
-                if retrievedobjects.CutColour == 'NoData':
-                    context['GillsCutColour'] = retrievedobjects.CutColour
+                if retrievedobjects.GillBruiseColour == 'NoData':
+                    context['GillsBruiseColour'] = retrievedobjects.GillBruiseColour
                 else:
-                    context['GillsCutColour'] = insertglossarylinks(retrievedobjects.CutColour)[0]
-                    context['GillsCutColourLinks'] = insertglossarylinks(retrievedobjects.CutColour)[1]
+                    context['GillsBruiseColour'] = insertglossarylinks(retrievedobjects.GillBruiseColour)[0]
+                    context['GillsBruiseColourLinks'] = insertglossarylinks(retrievedobjects.GillBruiseColour)[1]
+                    context['GillData'] = 'GillDataPresent'
 
-                if retrievedobjects.Attachment == 'NoData':
-                    context['GillsAttachment'] = retrievedobjects.Attachment
+                if retrievedobjects.GillCutColour == 'NoData':
+                    context['GillsCutColour'] = retrievedobjects.GillCutColour
                 else:
-                    context['GillsAttachment'] = insertglossarylinks(retrievedobjects.Attachment)[0]
-                    context['GillsAttachmentLinks'] = insertglossarylinks(retrievedobjects.Attachment)[1]
+                    context['GillsCutColour'] = insertglossarylinks(retrievedobjects.GillCutColour)[0]
+                    context['GillsCutColourLinks'] = insertglossarylinks(retrievedobjects.GillCutColour)[1]
+                    context['GillData'] = 'GillDataPresent'
 
-                if retrievedobjects.Arrangement == 'NoData':
-                    context['GillsArrangement'] = retrievedobjects.Arrangement
+                if retrievedobjects.GillAttachment == 'NoData':
+                    context['GillsAttachment'] = retrievedobjects.GillAttachment
                 else:
-                    context['GillsArrangement'] = insertglossarylinks(retrievedobjects.Arrangement)[0]
-                    context['GillsArrangementLinks'] = insertglossarylinks(retrievedobjects.Arrangement)[1]
+                    context['GillsAttachment'] = insertglossarylinks(retrievedobjects.GillAttachment)[0]
+                    context['GillsAttachmentLinks'] = insertglossarylinks(retrievedobjects.GillAttachment)[1]
+                    context['GillData'] = 'GillDataPresent'
 
-                context['GillsMilk'] = retrievedobjects.Milk
-
-                if retrievedobjects.Comments == 'no comments':
-                    context['GillsComments'] = retrievedobjects.Comments
+                if retrievedobjects.GillArrangement == 'NoData':
+                    context['GillsArrangement'] = retrievedobjects.GillArrangement
                 else:
-                    context['GillsComments'] = insertglossarylinks(retrievedobjects.Comments)[0]
-                    context['GillsCommentsLinks'] = insertglossarylinks(retrievedobjects.Comments)[1]
+                    context['GillsArrangement'] = insertglossarylinks(retrievedobjects.GillArrangement)[0]
+                    context['GillsArrangementLinks'] = insertglossarylinks(retrievedobjects.GillArrangement)[1]
+                    context['GillData'] = 'GillDataPresent'
+
+                if retrievedobjects.GillMilk == 'NoData':
+                    context['GillsMilk'] = retrievedobjects.GillMilk
+                else:
+                    context['GillsMilk'] = insertglossarylinks(retrievedobjects.GillMilk)[0]
+                    context['GillsMilkLinks'] = insertglossarylinks(retrievedobjects.GillMilk)[1]
+                    context['GillData'] = 'GillDataPresent'
+
+                #context['GillsMilk'] = retrievedobjects.GillMilk
+
+                if retrievedobjects.GillComments == 'no comments':
+                    context['GillsComments'] = retrievedobjects.GillComments
+                else:
+                    context['GillsComments'] = insertglossarylinks(retrievedobjects.GillComments)[0]
+                    context['GillsCommentsLinks'] = insertglossarylinks(retrievedobjects.GillComments)[1]
+                    context['GillData'] = 'GillDataPresent'
 
                 context['ShowGillsFlag'] = 'Yes'
             else:
                 context['ShowGillsFlag'] = 'No'
         else:
             context['ShowGillsFlag'] = 'No'
+
+        #print('GillData: ', context['GillData']  )
+
 
         # SPORES
         sporessourceslist = []
@@ -680,6 +755,7 @@ class FungiDetail(DetailView):
         # FLESH
         fleshsourceslist = []
         pid = Flesh.objects.filter(Fungi_id=self.object).first()
+        print('FLESH-1:', pid)
         if data_present(pid):
             # if DataPresent(Flesh.objects.get(Fungi_id= self.object)):
             context['ShowFleshFlag'] = 'Yes'
@@ -777,7 +853,7 @@ class FungiDetail(DetailView):
                 context['SeasonsSourcesList'] = seasonssourceslist
                 # print('SeasonsSourcesList-9999', SeasonsSourcesList)
                 if retrievedobjects.Season != 'NoData' and retrievedobjects.Season != 'All Year':
-                    print('SEASON = ', retrievedobjects.Season)
+                    #print('SEASON = ', retrievedobjects.Season)
                     from_month = retrievedobjects.Season[0:retrievedobjects.Season.index(',')]
                     to_month = retrievedobjects.Season[(retrievedobjects.Season.rfind(',')) + 1:len(retrievedobjects.Season)]
                     fruitingseason = from_month + ' - ' + to_month
@@ -797,6 +873,7 @@ class FungiDetail(DetailView):
         # CUISINE
         cuisinesourceslist = []
         pid = Cuisine.objects.filter(Fungi_id=self.object).first()
+        print('cuisine-pid', pid)
         if data_present(pid):
             context['ShowCuisineFlag'] = 'Yes'
             context['data_to_display'] = True
@@ -810,10 +887,26 @@ class FungiDetail(DetailView):
                 # context['FleshComments'] = insertglossarylinks(retrievedobjects.Comments)[0]
                 context['PoisonType'] = retrievedobjects.PoisonType
                 context['CulinaryRating'] = retrievedobjects.CulinaryRating
-                context['Odour'] = retrievedobjects.Odour
-                context['Taste'] = retrievedobjects.Taste
+
+
+                if retrievedobjects.Odour is not None:
+                    if retrievedobjects.Odour == 'NoData':
+                        context['Odour'] = retrievedobjects.Odour
+                    else:
+                        context['Odour'] = insertglossarylinks(retrievedobjects.Odour)[0]
+                        context['OdourLinks'] = insertglossarylinks(retrievedobjects.Odour)[1]
+
+                if retrievedobjects.Taste is not None:
+                    if retrievedobjects.Taste == 'NoData':
+                        context['Taste'] = retrievedobjects.Taste
+                    else:
+                        context['Taste'] = insertglossarylinks(retrievedobjects.Taste)[0]
+                        context['TasteLinks'] = insertglossarylinks(retrievedobjects.Taste)[1]
+
                 context['CuisineComments'] = insertglossarylinks(retrievedobjects.Comments)[0]
+                print('Context[CuisineComments]', context['CuisineComments'])
                 context['CuisineCommentsLinks'] = insertglossarylinks(retrievedobjects.Comments)[1]
+                print('Context[CuisineCommentsLinks]', context['CuisineCommentsLinks'])
                 context['ShowCuisineFlag'] = 'Yes'
             else:
                 context['ShowCuisineFlag'] = 'No'

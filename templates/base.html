@@ -45,7 +45,7 @@
 
                      {% if  object.CommonName %}
                         {% if object.CommonName == "Common Name" %}
-                            <em>{{ object.LatinName }}</em>id: {{ object.id }}
+                            <em>{{ object.LatinName }}</em>, id: {{ object.id }}
                         {% endif %}
                         {% if object.CommonName != "Common Name" %}
                             {% if user.show.ShowLatinNames %}

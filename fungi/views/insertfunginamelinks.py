@@ -38,14 +38,13 @@ def insertfunginamelinks(sectiontext):
                             if SplitTextItem == partname:
                                 splittext.remove(partname)
 
-            splittexttemp = splittext
-
-            for stitem in reversed(splittext):
-                idx9 = splittext.index(stitem)
-                if splittexttemp[idx9][0:-1] in splittext[idx9 - 1]:
-                    splittexttemp[idx9] = splittext[idx9][-1]
-
-            splittext = splittexttemp
+            # Can't work ou what I was trying to achieve here so have commented out!
+            # splittexttemp = splittext
+            # for stitem in reversed(splittext):
+            #     idx9 = splittext.index(stitem)
+            #     if splittexttemp[idx9][0:-1] in splittext[idx9 - 1]:
+            #         splittexttemp[idx9] = splittext[idx9][-1]
+            # splittext = splittexttemp
 
     except Exception as e:
         print(fcn + ' ERROR- first loop')
@@ -81,11 +80,14 @@ def insertfunginamelinks(sectiontext):
     except Exception as e:
         print('ERROR - THIRD LOOP')
 
+    #print('splittext: ',splittext)
     for items in splittext:
         for items3 in sorteditemlist:
             if splittext.index(items) == items3[0]:
                 alreadyinlist.append(splittext.index(items))
+               # print('alreadyinlist: ', alreadyinlist)
                 alreadyinlisttext.append(items3)
+                #print('alreadyinlisttext: ', alreadyinlisttext)
 
     for u in allitems:
         if splittext[u] == ',' or splittext[u] == '.':
@@ -99,6 +101,7 @@ def insertfunginamelinks(sectiontext):
         itemlist.append(sublist)
 
     sorteditemlist = sorted(itemlist)
+    #print('sorteditemlist: ', sorteditemlist)
 
     # Creates dictionnary of text  items and links to pass to template
     for items in sorteditemlist:
@@ -110,6 +113,6 @@ def insertfunginamelinks(sectiontext):
     if not fungifound:
         sorteditemsdict = sectiontext
 
-    # print('sorteditemsdict = ', sorteditemsdict)
+    #print('sorteditemsdict = ', sorteditemsdict)
 
     return [sorteditemsdict, fungifound]
